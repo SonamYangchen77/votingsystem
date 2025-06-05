@@ -1,0 +1,149 @@
+<%- include('partials/header') %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="/css/candidate.css">
+
+<main>
+  <h2 class="title">View and learn about the candidates running in different elections</h2>
+
+  <!-- Dropdown for election selection -->
+  <section class="dropdown-group" style="margin-bottom: 20px;">
+    <label for="electionSelect"><strong>Select Election:</strong></label>
+    <select id="electionSelect" name="electionSelect">
+      <option value="/candidate">All Candidates</option>
+
+      <optgroup label="FINA">
+        <option value="/candidate/FINA President">FINA President</option>
+        <option value="/candidate/FINA Secretary">FINA Secretary</option>
+        <option value="/candidate/FINA Representative">FINA Representative</option>
+      </optgroup>
+
+      <optgroup label="Unit">
+        <option value="/candidate/Unit SUU">SUU</option>
+        <option value="/candidate/Unit Culture">Culture</option>
+      </optgroup>
+
+      <optgroup label="Forum">
+        <option value="/candidate/Forum Mathematic">Mathematic</option>
+        <option value="/candidate/Forum Physical Science">Physical Science</option>
+      </optgroup>
+
+      <optgroup label="Resident">
+        <option value="/candidate/Resident Norbuling">Norbuling</option>
+      </optgroup>
+    </select>
+  </section>
+
+  <section class="candidate-list">
+    <h3>
+      <%= (typeof selectedPosition !== 'undefined' && selectedPosition) ? selectedPosition.toUpperCase() + ' Candidates' : 'All Candidates' %>
+    </h3>
+
+    <% if (candidates && candidates.length > 0) { %>
+      <ul>
+        <% candidates.forEach(candidate => { %>
+          <li class="candidate-card" style="border:1px solid #ccc; padding:15px; margin-bottom:15px; border-radius:5px;">
+            <img src="<%= candidate.candidate_image_url %>" alt="Image of <%= candidate.full_name %>" width="150" height="150" style="float:left; margin-right:15px; border-radius:5px;">
+            <h4><%= candidate.full_name %></h4>
+            <p><strong>Position:</strong> <%= candidate.position %></p>
+            <p><strong>Course:</strong> <%= candidate.course %> - Year <%= candidate.year %></p>
+            <p><strong>Election:</strong> <%= candidate.election_name %></p>
+
+            <button class="details-btn" data-id="<%= candidate.id %>" style="margin-top:10px; padding:6px 12px; cursor:pointer;">Details</button>
+
+            <div class="candidate-details" style="display:none; clear:both; margin-top:15px; border-top:1px solid #ddd; padding-top:10px;">
+              <p><strong>Manifesto:</strong> <%= candidate.manifesto %></p>
+              <p><strong>Past Experiences:</strong> <%= candidate.past_experiences || 'No details available.' %></p>
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else if (selectedPosition) { %>
+      <p>No candidates available for <%= selectedPosition %>.</p>
+    <% } else { %>
+      <p>No candidates found.</p>
+    <% } %>
+  </section>
+
+  <section class="info-note">
+    <div class="note-left">
+      <h4>NOTE</h4>
+      <p><strong>Read the Manifesto Carefully Before Voting</strong><br>Understand what each candidate stands for.</p>
+      <p><strong>Remember to Vote on Time</strong><br>"Voting is open from April 20, 9:00 AM to April 21, 5:00 PM."</p>
+    </div>
+
+    <div class="note-right">
+      <p><strong>Check Candidate Backgrounds</strong><br>"Look into each candidate’s leadership experience and goals before deciding."</p>
+      <p><strong>Support Respectful Campaigning</strong><br>"Let’s keep the election fair, kind, and student-focused."</p>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>
+
+<script>
+  // Dropdown navigation
+  document.getElementById('electionSelect').addEventListener('change', (e) => {
+    const value = e.target.value;
+    if (value) {
+      window.location.href = value;
+    }
+  });
+
+  // Details button toggle
+  document.querySelectorAll('.details-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const card = button.closest('.candidate-card');
+      const details = card.querySelector('.candidate-details');
+      if (details.style.display === 'none' || !details.style.display) {
+        details.style.display = 'block';
+        button.textContent = 'Hide Details';
+      } else {
+        details.style.display = 'none';
+        button.textContent = 'Details';
+      }
+    });
+  });
+
+  // Carousel functionality (if applicable)
+  const slides = document.querySelectorAll('.carousel-img');
+  let current = 0;
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.remove('active');
+      if (i === index) slide.classList.add('active');
+    });
+  }
+
+  function nextSlide() {
+    current = (current + 1) % slides.length;
+    showSlide(current);
+  }
+
+  if (slides.length > 0) {
+    showSlide(current);
+    setInterval(nextSlide, 5000);
+  }
+
+  // Navigation toggle (if applicable)
+  const navToggle = document.getElementById('navToggle');
+  if (navToggle) {
+    const navMenu = document.getElementById('navMenu');
+    const icon = navToggle.querySelector('i');
+
+    navToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('show');
+
+      if (icon.classList.contains('fa-bars')) {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+      } else {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

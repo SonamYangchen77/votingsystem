@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - UniVote</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="signup-box">
+      <h2>Create an Account</h2>
+      <form action="/auth/signup" method="POST">
+        <label for="name">Full Name</label>
+        <input type="text" name="name" id="name" required />
+
+        <label for="email">RUB Email (Sherubtse)</label>
+        <input type="email" name="email" id="email" placeholder="e.g. sonam@rub.edu.bt" required />
+
+        <label for="course">Course</label>
+        <input type="text" name="course" id="course" required />
+
+        <label for="year">Year</label>
+        <select name="year" id="year" required>
+          <option value="">Select Year</option>
+          <option value="1">1st Year</option>
+          <option value="2">2nd Year</option>
+          <option value="3">3rd Year</option>
+          <option value="4">4th Year</option>
+        </select>
+
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required />
+
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" name="confirmPassword" id="confirmPassword" required />
+
+        <button type="submit">Sign Up</button>
+      </form>
+
+      <p>Already have an account? <a href="/">Login</a></p>
+    </div>
+  </div>
+</body>
+</html>

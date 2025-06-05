@@ -1,0 +1,118 @@
+<%- include('partials/header') %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="/css/about.css">
+
+<div class="about-page">
+
+  <!-- Mission & Vision Overlay -->
+  <section class="overlay-text">
+    <h2>Our Mission & Vision</h2>
+    <p>
+      To provide a secure, transparent, and efficient digital voting platform that empowers students and enhances trust in the electoral process.
+    </p>
+  </section>
+
+  <!-- Buttons -->
+  <div class="button-container">
+    <button class="primary-btn" aria-label="Show Key Features">Key Features</button>
+    <button class="secondary-btn" aria-label="Show How It Works">How it works</button>
+  </div>
+
+  <!-- Features Section -->
+  <section id="features-section" class="features">
+    <div class="card">
+      <h3>Secure Voting</h3>
+      <p>End-to-end encryption and verification systems ensure vote integrity and privacy.</p>
+    </div>
+    <div class="card">
+      <h3>Real-time Results</h3>
+      <p>Instant vote counting and result tabulation with complete transparency.</p>
+    </div>
+    <div class="card">
+      <h3>Accessibility</h3>
+      <p>Vote from anywhere within campus, using any device with internet access.</p>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-section" class="how-it-works" style="display: none;">
+    <h2>How It Works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="circle">1</div>
+        <h4>Registration</h4>
+        <p>Students register using their college ID and verify their identity.</p>
+      </div>
+      <div class="step">
+        <div class="circle">2</div>
+        <h4>Authentication</h4>
+        <p>Secure login with two-factor authentication.</p>
+      </div>
+      <div class="step">
+        <div class="circle">3</div>
+        <h4>Voting</h4>
+        <p>Cast votes securely for your chosen candidates.</p>
+      </div>
+      <div class="step">
+        <div class="circle">4</div>
+        <h4>Confirmation</h4>
+        <p>Receive verification of your submitted ballot.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<%- include('partials/footer') %>
+
+<script>
+  const slides = document.querySelectorAll('.carousel-img');
+  let current = 0;
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.remove('active');
+      if (i === index) slide.classList.add('active');
+    });
+  }
+
+  function nextSlide() {
+    current = (current + 1) % slides.length;
+    showSlide(current);
+  }
+
+  showSlide(current);
+  setInterval(nextSlide, 5000);
+
+  const featuresBtn = document.querySelector('.primary-btn');
+  const howBtn = document.querySelector('.secondary-btn');
+  const featuresSection = document.getElementById('features-section');
+  const howSection = document.getElementById('how-section');
+
+  featuresBtn.addEventListener('click', () => {
+    featuresSection.style.display = 'flex';
+    howSection.style.display = 'none';
+  });
+
+  howBtn.addEventListener('click', () => {
+    howSection.style.display = 'block';
+    featuresSection.style.display = 'none';
+  });
+
+  const navToggle = document.getElementById('navToggle');
+  const navMenu = document.getElementById('navMenu');
+  const icon = navToggle.querySelector('i');
+
+  navToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('show');
+    if (icon.classList.contains('fa-bars')) {
+      icon.classList.remove('fa-bars');
+      icon.classList.add('fa-times');
+    } else {
+      icon.classList.remove('fa-times');
+      icon.classList.add('fa-bars');
+    }
+  });
+</script>
+</body>
+</html>

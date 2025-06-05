@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Edit Election - UniVote</title>
+  <link rel="stylesheet" href="/css/adminElection.css" />
+</head>
+<style>
+  /* General Reset */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 30px;
+  color: #333;
+}
+
+/* Page Title */
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 30px;
+}
+
+/* Form Container */
+form {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Labels */
+form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  margin-top: 20px;
+}
+
+/* Input Fields */
+form input[type="text"],
+form input[type="datetime-local"],
+form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+/* Button */
+form button {
+  display: block;
+  width: 100%;
+  margin-top: 25px;
+  background-color: #2980b9;
+  color: white;
+  font-size: 16px;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+form button:hover {
+  background-color: #1c5980;
+}
+
+/* Back Link */
+a {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #2980b9;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+</style>
+<body>
+  <h1>Edit Election</h1>
+  <form action="/editElection/<%= election.id %>?_method=PUT" method="POST">
+    <label for="name">Election Name</label>
+    <input type="text" name="name" id="name" value="<%= election.name %>" required>
+
+    <label for="description">Description</label>
+    <textarea name="description" id="description" rows="3"><%= election.description %></textarea>
+
+    <label for="startDate">Start Date</label>
+    <input type="datetime-local" name="startDate" id="startDate" value="<%= election.start_date.toISOString().slice(0,16) %>" required>
+
+    <label for="endDate">End Date</label>
+    <input type="datetime-local" name="endDate" id="endDate" value="<%= election.end_date.toISOString().slice(0,16) %>" required>
+
+    <button type="submit">Update Election</button>
+  </form>
+  <a href="/admin/adminElection">Back to Elections</a>
+</body>
+</html>

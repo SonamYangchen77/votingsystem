@@ -1,0 +1,82 @@
+<%- include('partials/header') %>
+
+<link rel="stylesheet" href="/css/home.css">
+
+
+<div class="section">
+  <div class="card">
+    <h3>Current Election</h3>
+    <img src="/assets/fina.png" alt="UniVote Logo" style="width:100%; border-radius: 8px;">
+    <p>FNA election 2025</p>
+    <button onclick="window.location.href='/election'">Vote Now</button>
+  </div>
+
+  <div class="card">
+    <h3>Quick Links</h3>
+    <ul>
+      <li><a href="/candidates">View Candidates</a></li>
+      <li><a href="/guidelines">Voting Guidelines</a></li>
+      <li><a href="/schedule">Election Schedule</a></li>
+      <li><a href="/results">Results</a></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Upcoming Elections</h3>
+    <% if (upcomingElections.length === 0) { %>
+      <p>No upcoming elections at the moment.</p>
+    <% } else { %>
+      <ul>
+        <% upcomingElections.forEach(election => { %>
+          <li>
+            <strong><%= election.name %></strong><br />
+            Nomination: <%= new Date(election.nomination_date).toLocaleDateString() %><br />
+            Voting: <%= new Date(election.voting_start).toLocaleDateString() %> – <%= new Date(election.voting_end).toLocaleDateString() %><br />
+            Results: <%= new Date(election.results_date).toLocaleDateString() %>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
+
+<script>
+  const slides = document.querySelectorAll('.carousel-img');
+  let current = 0;
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.remove('active');
+      if (i === index) slide.classList.add('active');
+    });
+  }
+
+  function nextSlide() {
+    current = (current + 1) % slides.length;
+    showSlide(current);
+  }
+
+  showSlide(current); // Show first slide initially
+  setInterval(nextSlide, 5000); // Change slide every 5 seconds
+
+  const navToggle = document.getElementById('navToggle');
+  const navMenu = document.getElementById('navMenu');
+  const icon = navToggle.querySelector('i');
+
+  navToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('show');
+
+    // Toggle icon between bars and times
+    if (icon.classList.contains('fa-bars')) {
+      icon.classList.remove('fa-bars');
+      icon.classList.add('fa-times');
+    } else {
+      icon.classList.remove('fa-times');
+      icon.classList.add('fa-bars');
+    }
+  });
+</script>
+</body>
+</html>

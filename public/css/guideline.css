@@ -1,0 +1,255 @@
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and base styling */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #001845;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    height: 90px;
+    align-items: center;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: auto; /* Pushes nav to the right */
+}
+
+.logo img {
+    max-height: 90px;
+    max-width: 150px;
+    object-fit: contain;
+    margin-left: -2rem; /* Cancels out header padding to touch screen edge */
+}
+
+.logo span {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #facc15;
+}
+
+
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem; /* Increased gap for better spacing */
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600; /* Increased font weight for emphasis */
+    font-size: 1.2rem; /* Increased font size */
+    position: relative;
+}
+
+nav a:hover {
+    color: #facc15;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 35px;
+    background-color: #334155;
+    padding: 0.5rem 0;
+    min-width: 150px;
+    border-radius: 4px;
+    z-index: 1000;
+}
+
+.dropdown-content a {
+    display: block;
+    color: white;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    font-size: 1.1rem; /* Slightly increased size for dropdown items */
+}
+
+.dropdown-content a:hover {
+    background-color: #1e293b;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Carousel */
+.carousel {
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+  }
+  
+  .carousel-img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;          /* Keeps aspect ratio and fills the container */
+    object-position: top -10px;       /* Aligns image to the top */
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+  
+  .carousel-img.active {
+    opacity: 1;
+    z-index: 1;
+  }
+  
+
+/* Content container */
+.container {
+    max-width: 90%; /* Increased width */
+    margin: 120px auto 30px; /* Added margin-top to provide space for the fixed header */
+    padding: 0 20px;
+}
+
+.card {
+    background: #ffffff; /* White background for contrast */
+    padding: 30px; /* Increased padding for more spacious cards */
+    margin-bottom: 30px;
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+}
+
+.card:hover {
+    transform: translateY(-10px); /* Card slightly lifts on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+.card h2, .card h3 {
+    margin-top: 0;
+    color: #003366;
+    font-size: 2rem; /* Increased heading size */
+    font-weight: 700; /* Increased weight for emphasis */
+}
+
+.card ul {
+    padding-left: 20px;
+    font-size: 1.2rem; /* Increased font size for list items */
+}
+
+.grid {
+    display: grid;
+    gap: 20px; /* Increased gap for better spacing */
+    margin-top: 10px;
+}
+
+.grid.two {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid.three {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.grid div {
+    padding: 20px; /* Increased padding for grid items */
+    background-color: #f9fafb;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: background-color 0.3s ease;
+    font-size: 1.3rem; /* Increased font size for grid items */
+}
+
+.grid div:hover {
+    background-color: #e3e8f0; /* Light hover effect */
+}
+
+/* Footer */
+footer {
+    background-color: #001845;
+    color: white;
+    padding: 2rem 1rem;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.footer-links,
+.socials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem; /* Increased gap for footer links */
+    margin-bottom: 1rem;
+}
+
+footer a {
+    color: #facc15;
+    text-decoration: none;
+    font-size: 1.2rem; /* Increased font size for footer links */
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Toggle button for mobile */
+.nav-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    display: none;
+    z-index: 1001;
+  }
+  
+  /* Show toggle button only on small screens */
+  @media (max-width: 768px) {
+    .nav-toggle {
+      display: block;
+      position: absolute;
+      top: 30px;
+      right: 20px;
+    }
+  
+    .nav-menu {
+      flex-direction: column;
+      position: absolute;
+      top: 90px;
+      right: 0;
+      background-color: #001845;
+      width: 100%;
+      display: none;
+      padding: 1rem;
+    }
+  
+    .nav-menu.show {
+      display: flex;
+    }
+  
+    .nav-menu a,
+    .nav-menu .dropdown {
+      margin: 10px 0;
+    }
+  }
+  

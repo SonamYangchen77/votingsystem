@@ -1,0 +1,113 @@
+<%- include('partials/header') %>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/guideline.css">
+    <main class="container">
+        <section class="card">
+            <h2>General Guidelines</h2>
+            <ul>
+                <li>The voting system is designed for fair and transparent elections.</li>
+                <li>Ensure student identity before participating.</li>
+                <li>Only one vote is allowed per student.</li>
+                <li>All votes are confidential and encrypted.</li>
+                <li>Any form of misconduct is subject to disqualification.</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Voter Eligibility</h2>
+            <div class="grid three">
+                <div>Must be a currently enrolled student</div>
+                <div>Must have valid college email domain</div>
+                <div>Valid College ID required</div>
+                <div>No academic disciplinary actions</div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Voting Process</h2>
+            <h3>Before Voting</h3>
+            <div class="grid three">
+                <div>Update your student profile</div>
+                <div>Verify email address</div>
+                <div>Secure invitation information</div>
+            </div>
+
+            <h3>During Voting</h3>
+            <div class="grid three">
+                <div>Login using college credentials</div>
+                <div>Complete verification process</div>
+                <div>Select your candidates</div>
+                <div>Review selections before submission</div>
+            </div>
+
+            <h3>After Voting</h3>
+            <div class="grid two">
+                <div>Receive confirmation receipt</div>
+                <div>See anonymous summary</div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Security Measures</h2>
+            <div class="grid two">
+                <div>
+                    <h4>Authentication</h4>
+                    <ul>
+                        <li>Two-factor authentication required</li>
+                        <li>Secure student login portal</li>
+                        <li>Access restricted to .edu.bt emails</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Data Protection</h4>
+                    <ul>
+                        <li>All data is encrypted</li>
+                        <li>No third-party access</li>
+                        <li>Regular security audits</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+    <%- include('partials/footer') %>
+    <script>
+        const slides = document.querySelectorAll('.carousel-img');
+        let current = 0;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) slide.classList.add('active');
+            });
+        }
+
+        function nextSlide() {
+            current = (current + 1) % slides.length;
+            showSlide(current);
+        }
+
+        showSlide(current);
+        setInterval(nextSlide, 5000);
+
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+        const icon = navToggle.querySelector('i');
+
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('show');
+
+            // Toggle icon between bars and times
+            if (icon.classList.contains('fa-bars')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

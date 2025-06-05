@@ -1,0 +1,132 @@
+<%- include('partials/header') %>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="/css/result.css">
+
+<main class="results-container">
+  <section class="results-overview" id="liveResults">
+    <div class="overview-header">
+      <h2>Live Election Results</h2>
+      <p>Fetching latest vote data...</p>
+    </div>
+  </section>
+
+  <section class="key-stats" id="keyStats">
+    <h3>Key Statistics</h3>
+    <div class="stats-cards">
+      <div class="stat-card">
+        <h4>Voter Turnout</h4>
+        <p id="turnoutPercent">-</p>
+        <small id="turnoutText"></small>
+      </div>
+      <div class="stat-card">
+        <h4>Highest Margin</h4>
+        <p id="highestMargin">-</p>
+        <small id="highestMarginPosition">-</small>
+      </div>
+      <div class="stat-card">
+        <h4>Closest Race</h4>
+        <p id="closestMargin">-</p>
+        <small id="closestMarginPosition">-</small>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+  socket.on('liveResultsUpdate', data => {
+    renderLiveResults(data);
+  });
+
+  function renderLiveResults(data) {
+  const container = document.getElementById('liveResults');
+  let html = '';
+  let totalVotes = 0;
+  let highestMargin = { diff: 0, pos: '' };
+  let closestMargin = { diff: Infinity, pos: '' };
+
+  data.results.forEach(election => {
+    html += `<h3>${election.electionTitle} <span id="timer-${election.id}" class="timer"></span></h3>`;
+    html += `<div class="result-card">`;
+
+    const sorted = [...election.candidates].sort((a, b) => b.votes - a.votes);
+    const diff = Math.abs((sorted[0]?.votes || 0) - (sorted[1]?.votes || 0));
+
+    if (diff > highestMargin.diff) highestMargin = { diff, pos: election.electionTitle };
+    if (diff < closestMargin.diff) closestMargin = { diff, pos: election.electionTitle };
+
+    totalVotes += election.totalVotes;
+
+    election.candidates.forEach(candidate => {
+      html += `
+        <div class="candidate">
+          <img src="${candidate.imageUrl || '/images/default.png'}" alt="${candidate.name}">
+          <div>
+            <strong>${candidate.name}</strong><br>
+            <small>${candidate.party || ''}</small>
+          </div>
+          <div class="progress">
+            <div class="bar" style="width: ${candidate.percentage}%"></div>
+          </div>
+          <div class="votes">${candidate.votes} votes (${candidate.percentage}%)</div>
+        </div>
+      `;
+    });
+
+    html += `</div>`; // close result-card
+  });
+
+  container.innerHTML = `
+    <div class="overview-header">
+      <h2>Live Election Results</h2>
+      <p>Total Votes Counted: ${totalVotes}</p>
+    </div>
+    ${html}
+  `;
+
+  data.results.forEach(election => {
+    setCountdown(`timer-${election.id}`, new Date(election.endTime).getTime());
+  });
+
+  // Update key stats
+  document.getElementById('turnoutPercent').innerText = 'Live';
+  document.getElementById('turnoutText').innerText = `${totalVotes} votes`;
+  document.getElementById('highestMargin').innerText = `${highestMargin.diff} votes`;
+  document.getElementById('highestMarginPosition').innerText = highestMargin.pos || '-';
+  document.getElementById('closestMargin').innerText = `${closestMargin.diff} votes`;
+  document.getElementById('closestMarginPosition').innerText = closestMargin.pos || '-';
+}
+
+  // Countdown timer logic
+  function setCountdown(elementId, endTime) {
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = endTime - now;
+
+      if (distance < 0) {
+        document.getElementById(elementId).innerText = 'Election Closed';
+        return;
+      }
+
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById(elementId).innerText = `${hours}h ${minutes}m ${seconds}s`;
+
+      setTimeout(updateCountdown, 1000);
+    }
+
+    updateCountdown();
+  }
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,99 @@
+<%- include('partials/header') %>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/contact.css">
+
+  <main class="contact-container">
+    <div class="message-form">
+      <h2>Send us a Message</h2>
+      <form id="contactForm">
+        <input type="text" name="name" placeholder="Enter your name" required />
+        <input type="email" name="email" placeholder="Enter your email" required />
+        <input type="text" name="subject" placeholder="Enter subject" required />
+        <textarea name="message" placeholder="Enter your message" rows="5" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+
+    <div class="contact-info">
+      <h2>Contact Information</h2>
+      <p><strong>Address</strong><br />Sherubtse College<br />Kanglung, Trashigang<br />Bhutan</p>
+      <p><strong>Phone</strong><br />+975 17301495<br />+975 77488113</p>
+      <p><strong>Email</strong><br />support@univote.sherubtse.edu.bt<br />info@univote.sherubtse.edu.bt</p>
+      <p><strong>Office Hours</strong><br />
+        Monday - Friday: 8:00 AM – 5:00 PM<br />
+        Saturday: 9:00 AM – 1:00 PM<br />
+        Sunday: Closed
+      </p>
+    </div>
+  </main>
+  <%- include('partials/footer') %>
+    <script>
+      const slides = document.querySelectorAll('.carousel-img');
+      let current = 0;
+
+      function showSlide(index) {
+        slides.forEach((slide, i) => {
+          slide.classList.remove('active');
+          if (i === index) slide.classList.add('active');
+        });
+      }
+
+      function nextSlide() {
+        current = (current + 1) % slides.length;
+        showSlide(current);
+      }
+
+      showSlide(current); // Show first slide initially
+      setInterval(nextSlide, 5000); // Change slide every 5 seconds
+
+
+      const navToggle = document.getElementById('navToggle');
+      const navMenu = document.getElementById('navMenu');
+      const icon = navToggle.querySelector('i');
+
+      navToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('show');
+
+        // Toggle icon between bars and times
+        if (icon.classList.contains('fa-bars')) {
+          icon.classList.remove('fa-bars');
+          icon.classList.add('fa-times');
+        } else {
+          icon.classList.remove('fa-times');
+          icon.classList.add('fa-bars');
+        }
+      });
+
+      document.getElementById('contactForm').addEventListener('submit', async function (e) {
+        e.preventDefault(); // Prevent page reload
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        const response = await fetch('/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: formData.get('name'),
+            email: formData.get('email'),
+            subject: formData.get('subject'),
+            message: formData.get('message')
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          alert(result.message);
+          form.reset();
+        } else {
+          alert('Failed to send message. Please try again.');
+        }
+      });
+
+
+    </script>
+    </body>
+
+    </html>

@@ -1,0 +1,190 @@
+/* Fixed Header */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #001845; /* Deep blue */
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  height: 90px;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Add padding to body so content scrolls under header */
+body {
+  margin: 0;
+  padding-top: 90px;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;
+}
+
+.logo img {
+  max-height: 90px;
+  max-width: 150px;
+  object-fit: contain;
+  margin-left: -2rem;
+}
+
+.logo span {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #facc15; /* Bright yellow */
+}
+
+/* Nav */
+nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: #facc15;
+}
+
+/* Dropdown */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 35px;
+  background-color: #334155;
+  padding: 0.5rem 0;
+  min-width: 150px;
+  border-radius: 4px;
+  z-index: 1000;
+}
+
+.dropdown-content a {
+  display: block;
+  color: white;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.dropdown-content a:hover {
+  background-color: #1e293b;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Logout button */
+.logout-button {
+  padding: 8px 16px;
+  background-color: #4f7fd9;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+  background-color: #0339ce;
+}
+
+/* Carousel */
+.carousel {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.carousel-img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.carousel-img.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+/* Toggle button */
+.nav-toggle {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  display: none;
+  z-index: 1001;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: block;
+    position: absolute;
+    top: 30px;
+    right: 20px;
+  }
+
+  .nav-menu {
+    flex-direction: column;
+    position: absolute;
+    top: 90px;
+    right: 0;
+    background-color: #001845;
+    width: 100%;
+    display: none;
+    padding: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+
+  .nav-menu.show {
+    display: flex;
+  }
+
+  .nav-menu a,
+  .nav-menu .dropdown {
+    margin: 10px 0;
+  }
+
+  .dropdown-content {
+    position: static;
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  .dropdown-content a {
+    padding-left: 1.5rem;
+    background-color: #001845;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+}

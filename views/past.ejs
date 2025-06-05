@@ -1,0 +1,109 @@
+<%- include('partials/header') %>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/past.css">
+
+  <main>
+    <section class="election-overview">
+      <h2>Complete overview of all college elections – past, present, and future</h2>
+      <div class="button-group">
+        <button class="btn" data-url="/upcoming">Upcoming Elections</button>
+        <button class="btn" data-url="/election">Ongoing Elections</button>
+        <button class="btn active" data-url="/past">Completed Elections</button>
+      </div>
+    </section>
+
+    <section class="archives">
+      <h3>Election Archives</h3>
+
+      <% if (pastElections.length === 0) { %>
+        <p>No past elections found.</p>
+      <% } else { %>
+        <% pastElections.forEach(election => { %>
+          <div class="election-box">
+            <h4><%= election.title %></h4>
+            <p>Date: <%= election.date %> | Vote Turnout: <%= election.turnout %> | Total Votes: <%= election.totalVotes %></p>
+
+            <% if (election.positions && election.positions.length > 0) { %>
+              <% election.positions.forEach(position => { %>
+                <div class="candidate-block">
+                  <strong><%= position.title %></strong>
+                  <p>Winner: <%= position.winner %></p>
+
+                  <% if (position.results && position.results.length > 0) { %>
+                    <% position.results.forEach((result, index) => { %>
+                      <div class="progress-bar <%= index % 2 === 1 ? 'alt' : '' %>">
+                        <span style="width: <%= result.percentage %>%;"><%= result.votes %> votes (<%= result.percentage %>%)</span>
+                      </div>
+                    <% }) %>
+                  <% } else { %>
+                    <p>No result data.</p>
+                  <% } %>
+                </div>
+              <% }) %>
+            <% } else { %>
+              <p>No position data available.</p>
+            <% } %>
+          </div>
+        <% }) %>
+      <% } %>
+    </section>
+
+    <section class="statistics">
+      <h3>Election Statistics</h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h4>Average Turnout</h4>
+          <p><strong><%= statistics.avgTurnout %>%</strong></p>
+        </div>
+        <div class="stat-card">
+          <h4>Total Participants</h4>
+          <p><strong><%= statistics.totalParticipants %></strong></p>
+        </div>
+        <div class="stat-card">
+          <h4>Contested Positions</h4>
+          <p><strong><%= statistics.totalPositions %></strong></p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <%- include('partials/footer') %>
+
+  <script>
+    const slides = document.querySelectorAll('.carousel-img');
+    let current = 0;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active');
+        if (i === index) slide.classList.add('active');
+      });
+    }
+
+    function nextSlide() {
+      current = (current + 1) % slides.length;
+      showSlide(current);
+    }
+
+    showSlide(current);
+    setInterval(nextSlide, 5000);
+
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    const icon = navToggle.querySelector('i');
+
+    navToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('show');
+      icon.classList.toggle('fa-bars');
+      icon.classList.toggle('fa-times');
+    });
+
+    document.querySelectorAll('.button-group .btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const url = button.getAttribute('data-url');
+        window.location.href = url;
+      });
+    });
+  </script>
+</body>
+</html>

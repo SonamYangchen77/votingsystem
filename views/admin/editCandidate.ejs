@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Update Candidate</title>
+  <style>
+    /* Base Reset and Typography */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f6fa;
+      margin: 0;
+      padding: 40px 20px;
+      color: #2c3e50;
+    }
+
+    /* Page Title */
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #34495e;
+    }
+
+    /* Form Styling */
+    form {
+      max-width: 600px;
+      margin: 0 auto 30px;
+      background: #fff;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    form label {
+      display: block;
+      margin-top: 18px;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #333;
+    }
+
+    form input[type="text"],
+    form input[type="file"],
+    form select,
+    form textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-top: 4px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* Image Preview */
+    #currentImage {
+      display: block;
+      max-width: 200px;
+      height: auto;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+      border-radius: 6px;
+    }
+
+    /* Submit & Delete Buttons */
+    form button {
+      margin-top: 25px;
+      width: 100%;
+      background-color: #2980b9;
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    form button:hover {
+      background-color: #21618c;
+    }
+
+    /* Delete Button Styling (second form) */
+    form + form button {
+      background-color: #e74c3c;
+    }
+
+    form + form button:hover {
+      background-color: #c0392b;
+    }
+
+    /* Error Message */
+    h2[style*="color:red"] {
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <% if (typeof candidate !== 'undefined' && candidate) { %>
+    <h1>Update Candidate</h1>
+    <form method="POST" action="/admin/adminCandidate/update/<%= candidate.id %>" enctype="multipart/form-data">
+
+      <label for="electionName">Election Name:</label>
+      <select name="election_name" id="electionName" required>
+        <option value="FINA" <%= candidate.election_name === 'FINA' ? 'selected' : '' %>>FINA</option>
+        <option value="UNIT" <%= candidate.election_name === 'UNIT' ? 'selected' : '' %>>UNIT</option>
+        <option value="FORUM" <%= candidate.election_name === 'FORUM' ? 'selected' : '' %>>FORUM</option>
+      </select>
+
+      <label for="position">Position:</label>
+      <select name="position" id="position" required>
+        <option value="President" <%= candidate.position === 'President' ? 'selected' : '' %>>President</option>
+        <option value="Vice President" <%= candidate.position === 'Vice President' ? 'selected' : '' %>>Vice President</option>
+        <option value="Coordinator" <%= candidate.position === 'Coordinator' ? 'selected' : '' %>>Coordinator</option>
+        <option value="General Secretary" <%= candidate.position === 'General Secretary' ? 'selected' : '' %>>General Secretary</option>
+      </select>
+
+      <!-- Past Experience Field -->
+      <label for="experience">Past Experience:</label>
+      <textarea name="experience" id="experience" placeholder="Describe candidate's past experience..." required><%= candidate.experience || '' %></textarea>
+
+      <label>Current Image:</label>
+      <img id="currentImage" src="<%= candidate.candidate_image_url || '/images/placeholder.png' %>" alt="<%= candidate.full_name %>" />
+
+      <label for="candidateImage">Upload New Image:</label>
+      <input type="file" name="candidate_image" id="candidateImage" accept="image/*" onchange="previewImage(event)" />
+
+      <button type="submit">Update Candidate</button>
+    </form>
+
+    <form method="POST" action="/admin/adminCandidate/delete">
+      <input type="hidden" name="candidateId" value="<%= candidate.id %>" />
+      <button type="submit">Delete</button>
+    </form>
+  <% } else { %>
+    <h2 style="color:red">Error: Candidate data not found.</h2>
+  <% } %>
+
+  <script>
+    function previewImage(event) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        document.getElementById('currentImage').src = reader.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UniVote Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/adminCandidate.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+</head>
+
+<body>
+      <div class="sidebar">
+    <div class="logo">
+        <img src="/assets/logo1.png" alt="UniVote">
+        <h2>UniVote</h2>
+    </div>
+    <nav>
+        <a href="/admin/dashboard" ><i class="fas fa-home"></i> Dashboard</a>
+        <a href="/admin/adminCandidate" class="active"><i class="fas fa-users"></i> Candidates</a>
+        <a href="/admin/adminElection"><i class="fas fa-vote-yea"></i> Elections</a>
+        <a href="/admin/adminResult"><i class="fas fa-chart-bar"></i> Results</a>
+        <a href="/admin/adminUser"><i class="fas fa-user"></i> Users</a>
+    </nav>
+    <div class="logout-container">
+        <form action="/admin/logout" method="POST">
+            <button type="submit" class="logout-button">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </form>
+    </div>
+</div>
+  <main>
+    <header>
+      <h1>Welcome to Online Voting System</h1>
+    </header>
+
+    <% if (message && message.length) { %>
+      <div class="alert success"><%= message[0] %></div>
+    <% } %>
+    <% if (error && error.length) { %>
+      <div class="alert error"><%= error[0] %></div>
+    <% } %>
+
+    <input type="text" id="searchInput" placeholder="Search candidates..."
+      style="padding:10px;width:100%;margin:20px 0;border-radius:6px;border:1px solid #ccc;" />
+
+    <button class="add-candidate-btn" id="addCandidateBtn">
+      <i class="fas fa-user-plus"></i> Add New Candidate
+    </button>
+
+    <div class="candidates-section">
+      <% if (!groupedCandidates || Object.keys(groupedCandidates).length === 0) { %>
+        <p>No candidates found.</p>
+      <% } else { %>
+        <% Object.keys(groupedCandidates).forEach(category => { %>
+          <div class="category-card">
+            <div class="category-header">
+              <h2><%= category %></h2>
+              <span class="category-tag"><%= category.slice(0, 4).toUpperCase() %></span>
+            </div>
+            <div class="candidates-grid">
+              <% groupedCandidates[category].forEach(candidate => { %>
+                <div class="candidate-card">
+                  <div class="candidate-image">
+                    <img src="<%= candidate.candidate_image_url || '/images/placeholder.png' %>" alt="<%= candidate.full_name %>" />
+                  </div>
+                  <div class="candidate-info">
+                    <h3><%= candidate.full_name %></h3>
+                    <p class="position"><%= candidate.position_name || candidate.position %></p>
+                    <p class="department"><%= candidate.course %></p>
+                    <p class="year">Year: <%= candidate.year %></p>
+                    <p class="description"><%= candidate.manifesto %></p>
+                    <div class="votes-count"><%= candidate.vote_count || 0 %> votes</div>
+                    <div class="candidate-actions">
+                      <a href="/admin/adminCandidate/edit/<%= candidate.id %>" class="edit-btn">
+                        <i class="fas fa-edit"></i> Edit
+                      </a>
+                      <form method="POST" action="/admin/adminCandidate/delete" style="display:inline" onsubmit="return confirm('Are you sure you want to delete this candidate?');">
+                        <input type="hidden" name="candidateId" value="<%= candidate.id %>">
+                        <button class="delete-btn" type="submit">
+                          <i class="fas fa-trash"></i> Delete
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+
+    <!-- Modal for adding candidate -->
+    <div class="modal-overlay" id="addCandidateModal" aria-hidden="true">
+      <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <button id="closeModalBtn" aria-label="Close modal">&times;</button>
+        <h2 id="modalTitle">Add New Candidate</h2>
+        <form action="/admin/adminCandidate/add" method="POST" enctype="multipart/form-data">
+
+          <label for="election_id">Election</label>
+          <select name="election_id" id="election_id" required>
+            <option value="" disabled selected>Select Election</option>
+            <% elections.forEach(election => { %>
+              <option value="<%= election.id %>"><%= election.name %></option>
+            <% }); %>
+          </select>
+
+          <label for="position">Position</label>
+          <input type="text" name="position" id="position" placeholder="e.g. President" required />
+
+          <label for="full_name">Full Name</label>
+          <input type="text" name="full_name" id="full_name" placeholder="e.g. Jane Doe" required />
+
+          <label for="course">Course/Department</label>
+          <input type="text" name="course" id="course" placeholder="e.g. Computer Science" required />
+
+          <label for="year">Year</label>
+          <input type="number" name="year" id="year" min="1" max="5" required />
+
+          <label for="manifesto">Manifesto</label>
+          <textarea name="manifesto" id="manifesto" placeholder="Candidate manifesto..." required></textarea>
+
+          <label for="candidate_image">Candidate Image</label>
+          <input type="file" name="candidate_image" id="candidate_image" accept="image/*" required />
+
+          <button type="submit">Add Candidate</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const addCandidateBtn = document.getElementById("addCandidateBtn");
+      const addCandidateModal = document.getElementById("addCandidateModal");
+      const closeModalBtn = document.getElementById("closeModalBtn");
+
+      addCandidateBtn?.addEventListener("click", () => {
+        addCandidateModal.classList.add("active");
+        addCandidateModal.setAttribute("aria-hidden", "false");
+      });
+
+      closeModalBtn?.addEventListener("click", () => {
+        addCandidateModal.classList.remove("active");
+        addCandidateModal.setAttribute("aria-hidden", "true");
+      });
+
+      addCandidateModal?.addEventListener("click", (e) => {
+        if (e.target === addCandidateModal) {
+          addCandidateModal.classList.remove("active");
+          addCandidateModal.setAttribute("aria-hidden", "true");
+        }
+      });
+
+      // Search filter for candidates
+      document.getElementById('searchInput')?.addEventListener('input', function () {
+        const query = this.value.toLowerCase();
+        document.querySelectorAll('.candidate-card').forEach(card => {
+          const name = card.querySelector('h3')?.innerText.toLowerCase();
+          card.style.display = name.includes(query) ? 'flex' : 'none';
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

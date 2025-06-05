@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UniVote Admin - Elections</title>
+  <link rel="stylesheet" href="/css/adminElection.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+</head>
+
+<body>
+      <div class="sidebar">
+    <div class="logo">
+        <img src="/assets/logo1.png" alt="UniVote">
+        <h2>UniVote</h2>
+    </div>
+    <nav>
+        <a href="/admin/dashboard" ><i class="fas fa-home"></i> Dashboard</a>
+        <a href="/admin/adminCandidate"><i class="fas fa-users"></i> Candidates</a>
+        <a href="/admin/adminElection" class="active"><i class="fas fa-vote-yea"></i> Elections</a>
+        <a href="/admin/adminResult"><i class="fas fa-chart-bar"></i> Results</a>
+        <a href="/admin/adminUser"><i class="fas fa-user"></i> Users</a>
+    </nav>
+    <div class="logout-container">
+        <form action="/admin/logout" method="POST">
+            <button type="submit" class="logout-button">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </form>
+    </div>
+</div>
+  <main>
+    <header>
+      <h1>Manage Elections</h1>
+    </header>
+
+    <button class="add-candidate-btn" id="addElectionBtn">
+      <i class="fas fa-plus"></i> Add New Election
+    </button>
+
+    <div class="elections-section">
+      <% if (!elections || elections.length===0) { %>
+        <p>No elections found.</p>
+        <% } else { %>
+          <% elections.forEach(election=> { %>
+            <div class="election-card">
+              <h2>
+                <%= election.name %>
+              </h2>
+              <p><strong>Description:</strong>
+                <%= election.description %>
+              </p>
+              <p><strong>Start:</strong>
+                <%= new Date(election.start_date).toLocaleString() %>
+              </p>
+              <p><strong>End:</strong>
+                <%= new Date(election.end_date).toLocaleString() %>
+              </p>
+              <div class="election-actions">
+                <a href="/admin/adminElection/editElection/<%= election.id %>" class="edit-btn">
+                  <i class="fas fa-edit"></i> Edit
+                </a>
+                <form action="/admin/adminElection/<%= election.id %>?_method=DELETE" method="POST"
+                  style="display:inline">
+                  <button type="submit" class="delete-btn"
+                    onclick="return confirm('Are you sure you want to delete this election?');">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </form>
+              </div>
+            </div>
+            <% }); %>
+              <% } %>
+    </div>
+
+    <!-- Modal: Add Election -->
+    <div class="modal-overlay" id="addElectionModal" aria-hidden="true">
+      <div class="modal-content">
+        <button id="closeModalBtn" aria-label="Close Modal">&times;</button>
+        <h2>Add New Election</h2>
+        <form action="/admin/adminElection/create" method="POST" enctype="multipart/form-data">
+
+
+          <label for="name">Election Name</label>
+          <input type="text" name="name" id="name" placeholder="Enter Election name" required>
+
+
+          <label for="description">Description</label>
+          <textarea name="description" id="description" placeholder="Write Description" rows="3"></textarea>
+
+          <label for="startDate">Start Date</label>
+          <input type="datetime-local" name="startDate" id="startDate" required>
+
+          <label for="endDate">End Date</label>
+          <input type="datetime-local" name="endDate" id="endDate" required>
+
+          <label for="votersFile">Upload CSV of Eligible Voters</label>
+          <input type="file" name="voterFile" />
+
+          <button type="submit">Add Election</button>
+        </form>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const addElectionBtn = document.getElementById("addElectionBtn");
+      const addElectionModal = document.getElementById("addElectionModal");
+      const closeModalBtn = document.getElementById("closeModalBtn");
+
+      addElectionBtn.addEventListener("click", () => {
+        addElectionModal.classList.add("active");
+        addElectionModal.setAttribute("aria-hidden", "false");
+      });
+
+      closeModalBtn.addEventListener("click", () => {
+        addElectionModal.classList.remove("active");
+        addElectionModal.setAttribute("aria-hidden", "true");
+      });
+
+      addElectionModal.addEventListener("click", (e) => {
+        if (e.target === addElectionModal) {
+          addElectionModal.classList.remove("active");
+          addElectionModal.setAttribute("aria-hidden", "true");
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

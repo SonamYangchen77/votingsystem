@@ -1,0 +1,129 @@
+<%- include('partials/header') %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/instruction.css">
+
+
+    <!-- Instructions -->
+    <section class="instructions">
+        <h2>Voting Instructions</h2>
+        <p>Welcome to the Election College Online Voting System. The system will walk you through the candidate voting
+            process step by step. Please ensure:</p>
+        <ul>
+            <li>You have no disability issues before voting</li>
+            <li>Your student ID and password</li>
+            <li>Access to internet connection</li>
+            <li>A calm and quiet environment for verification</li>
+            <li>A code will be generated</li>
+        </ul>
+        <p>Approximately 8–10 minutes to complete the process.</p>
+    </section>
+
+    <!-- Main -->
+    <div class="main-container">
+        <!-- Sidebar Progress Tracker -->
+        <aside class="sidebar">
+            <h3>Progress Tracker</h3>
+            <ol id="progressTracker">
+                <li class="step active" data-step="0">Login to System</li>
+                <li class="step" data-step="1">Select Candidate</li>
+                <li class="step" data-step="2">Review Choices</li>
+                <li class="step" data-step="3">Submit Vote</li>
+            </ol>
+            <div class="help">
+                <h4>Help & Support</h4>
+                <p>For assistance contact <br />support@college.edu</p>
+            </div>
+        </aside>
+
+        <!-- Login Box with Nav Arrows -->
+        <div class="login-box">
+            <div class="arrow-navigation">
+                <button class="arrow left" id="prevBtn">← Before</button>
+                <h2 id="stepTitle">Login to System</h2>
+                <button class="arrow right" id="nextBtn">Next →</button>
+            </div>
+            <div class="login-image">
+                <img src="/assets/login.png" alt="Login Instructions" />
+            </div>
+
+            <div class="tip">
+                <strong>Helpful Tip:</strong> Access the site only with your student credentials. Do not share your ID
+                and password.
+            </div>
+        </div>
+    </div>
+    <%- include('partials/footer') %>
+    <script>
+        const slides = document.querySelectorAll('.carousel-img');
+        let current = 0;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) slide.classList.add('active');
+            });
+        }
+
+        function nextSlide() {
+            current = (current + 1) % slides.length;
+            showSlide(current);
+        }
+
+        showSlide(current); // Show first slide initially
+        setInterval(nextSlide, 5000); // Change slide every 5 seconds
+
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+        const icon = navToggle.querySelector('i');
+
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('show');
+
+            // Toggle icon between bars and times
+            if (icon.classList.contains('fa-bars')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        const steps = [
+            "Login to System",
+            "Select Candidate",
+            "Review Choices",
+            "Submit Vote"
+        ];
+
+        let currentStep = 0;
+
+        const stepTitle = document.getElementById('stepTitle');
+        const progressItems = document.querySelectorAll('#progressTracker .step');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateStep(newStep) {
+            if (newStep < 0 || newStep >= steps.length) return;
+            currentStep = newStep;
+
+            // Update heading text
+            stepTitle.textContent = steps[currentStep];
+
+            // Highlight active tracker step
+            progressItems.forEach((item, index) => {
+                item.classList.toggle('active', index === currentStep);
+            });
+        }
+
+        prevBtn.addEventListener('click', () => updateStep(currentStep - 1));
+        nextBtn.addEventListener('click', () => updateStep(currentStep + 1));
+
+        // Make steps clickable
+        progressItems.forEach((item, index) => {
+            item.addEventListener('click', () => updateStep(index));
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniVote Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="sidebar">
+    <div class="logo">
+        <img src="/assets/logo1.png" alt="UniVote">
+        <h2>UniVote</h2>
+    </div>
+    <nav>
+        <a href="/admin/dashboard" class="active"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="/admin/adminCandidate"><i class="fas fa-users"></i> Candidates</a>
+        <a href="/admin/adminElection"><i class="fas fa-vote-yea"></i> Elections</a>
+        <a href="/admin/adminResult"><i class="fas fa-chart-bar"></i> Results</a>
+        <a href="/admin/adminUser"><i class="fas fa-user"></i> Users</a>
+    </nav>
+    <div class="logout-container">
+        <form action="/admin/logout" method="POST">
+            <button type="submit" class="logout-button">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </form>
+    </div>
+</div>
+
+    <main>
+        <header>
+            <h1>"Welcome to Online Voting System"</h1>
+
+        </header>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3>Total Voters</h3>
+                <p class="number">
+                    <%= totalVoters %>
+                </p>
+                <p class="trend">+12% from last month</p>
+            </div>
+            <div class="stat-card">
+                <h3>Active Elections</h3>
+                <p class="number">
+                    <%= activeElections %>
+                </p>
+                <p class="trend">3 ending soon</p>
+            </div>
+            <div class="stat-card">
+                <h3>Pending Approvals</h3>
+                <p class="number">
+                    <%= pendingApprovals %>
+                </p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Votes</h3>
+                <p class="number">
+                    <%= totalVotes %>
+                </p>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <div class="recent-activity">
+                <h2>Recent Activity</h2>
+                <div class="activity-list">
+                    <% recentActivities.forEach(activity=> { %>
+                        <div class="activity-item">
+                            <img src="<%= activity.userAvatar %>" alt="<%= activity.userName %>">
+                            <div class="activity-details">
+                                <h4>
+                                    <%= activity.userName %>
+                                </h4>
+                                <p>
+                                    <%= activity.action %>
+                                </p>
+                            </div>
+                            <span class="time">
+                                <%= activity.timeAgo %>
+                            </span>
+                        </div>
+                        <% }); %>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <h2>Quick Actions</h2>
+                <button class="action-btn create-election">
+                    <i class="fas fa-plus"></i> Create Election
+                </button>
+                <button class="action-btn view-reports">
+                    <i class="fas fa-file-alt"></i> View Reports
+                </button>
+                <button class="action-btn add-candidate">
+                    <i class="fas fa-user-plus"></i> Add Candidate
+                </button>
+            </div>
+        </div>
+        <h1><%= message %></h1>
+
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Profile dropdown functionality
+            const profileDropdown = document.querySelector('.profile-dropdown');
+            profileDropdown.addEventListener('click', function () {
+                // Add dropdown menu toggle logic here
+                console.log('Profile dropdown clicked');
+            });
+
+            // Notification click handler
+            const notification = document.querySelector('.notification');
+            notification.addEventListener('click', function () {
+                // Add notification panel toggle logic here
+                console.log('Notification clicked');
+            });
+
+            // Quick action buttons
+            const createElectionBtn = document.querySelector('.create-election');
+            createElectionBtn.addEventListener('click', function () {
+                window.location.href = '/elections/create';
+            });
+
+            const viewReportsBtn = document.querySelector('.view-reports');
+            viewReportsBtn.addEventListener('click', function () {
+                window.location.href = '/reports';
+            });
+
+            const addCandidateBtn = document.querySelector('.add-candidate');
+            addCandidateBtn.addEventListener('click', function () {
+                window.location.href = '/candidates/add';
+            });
+
+            // Update time ago for activity items
+            function updateTimeAgo() {
+                const timeElements = document.querySelectorAll('.time');
+                timeElements.forEach(element => {
+                    // Add logic to update relative time
+                    // This is a placeholder for actual time ago calculation
+                    const timestamp = element.getAttribute('data-timestamp');
+                    if (timestamp) {
+                        element.textContent = calculateTimeAgo(timestamp);
+                    }
+                });
+            }
+
+            function calculateTimeAgo(timestamp) {
+                // Add your time ago calculation logic here
+                // This is a simple placeholder
+                const now = new Date();
+                const past = new Date(timestamp);
+                const diffInMinutes = Math.floor((now - past) / (1000 * 60));
+
+                if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+                if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
+                return `${Math.floor(diffInMinutes / 1440)}d ago`;
+            }
+
+            // Update times every minute
+            setInterval(updateTimeAgo, 60000);
+            updateTimeAgo();
+
+            // Add real-time updates for stats
+            function updateStats() {
+                fetch('/api/dashboard/stats')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update the statistics
+                        document.querySelector('.total-voters .number').textContent = data.totalVoters;
+                        document.querySelector('.active-elections .number').textContent = data.activeElections;
+                        document.querySelector('.pending-approvals .number').textContent = data.pendingApprovals;
+                        document.querySelector('.total-votes .number').textContent = data.totalVotes;
+                    })
+                    .catch(error => console.error('Error updating stats:', error));
+            }
+
+            // Update stats every 5 minutes
+            setInterval(updateStats, 300000);
+        });
+    </script>
+</body>
+
+</html>

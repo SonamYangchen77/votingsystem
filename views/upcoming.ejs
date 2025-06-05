@@ -1,0 +1,97 @@
+<%- include('partials/header') %>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/upcoming.css">
+
+
+  <main>
+    <h2 class="page-title">Complete overview of all college elections – past, present, and future</h2>
+    <div class="button-group">
+      <button class="btn active" data-url="/upcoming">Upcoming Elections</button>
+      <button class="btn" data-url="/election">Ongoing Elections</button>
+      <button class="btn" data-url="/past">Completed Elections</button>
+    </div>
+
+    <% if (upcoming.length === 0) { %>
+      <p>No upcoming elections scheduled at the moment.</p>
+    <% } else { %>
+      <% upcoming.forEach(election => { %>
+        <div class="election-card">
+          <h3><%= election.title %></h3>
+          <div class="meta">
+            <span><%= election.date %></span>
+            <button class="btn" onclick="showDetails('<%= election.title %>', '<%= election.description %>', '<%= election.date %>', '<%= election.startTime %>', '<%= election.endTime %>')">Details</button>
+          </div>
+          <p>Description: <%= election.description %></p>
+          <p class="vote-period"><strong>Voting Period:</strong> <%= election.startTime %> - <%= election.endTime %></p>
+        </div>
+      <% }) %>
+    <% } %>
+  </main>
+
+  <div id="detailsSection" style="display: none;">
+    <div class="election-box">
+      <button class="back-btn" onclick="hideDetails()">BACK</button>
+      <h2 id="detailTitle">Title Here</h2>
+      <span class="status upcoming">Upcoming</span>
+      <p id="detailDescription">Description here</p>
+
+      <div class="details">
+        <div class="dates">
+          <p><strong>Date:</strong> <span id="detailDate"></span></p>
+          <p><strong>Voting Period:</strong> <span id="detailTime"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%- include('partials/footer') %>
+
+  <script>
+    const slides = document.querySelectorAll('.carousel-img');
+    let current = 0;
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active');
+        if (i === index) slide.classList.add('active');
+      });
+    }
+    function nextSlide() {
+      current = (current + 1) % slides.length;
+      showSlide(current);
+    }
+    showSlide(current);
+    setInterval(nextSlide, 5000);
+
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    const icon = navToggle.querySelector('i');
+    navToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('show');
+      icon.classList.toggle('fa-bars');
+      icon.classList.toggle('fa-times');
+    });
+
+    document.querySelectorAll('.button-group .btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const url = button.getAttribute('data-url');
+        window.location.href = url;
+      });
+    });
+
+    function showDetails(title, description, date, startTime, endTime) {
+      document.querySelector('main').style.display = 'none';
+      document.getElementById('detailsSection').style.display = 'block';
+
+      document.getElementById('detailTitle').innerText = title;
+      document.getElementById('detailDescription').innerText = description;
+      document.getElementById('detailDate').innerText = date;
+      document.getElementById('detailTime').innerText = `${startTime} - ${endTime}`;
+    }
+
+    function hideDetails() {
+      document.getElementById('detailsSection').style.display = 'none';
+      document.querySelector('main').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
