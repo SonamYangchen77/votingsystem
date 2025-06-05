@@ -6,6 +6,7 @@ const pool = new Pool({
   database: 'onlineVoting',
   password: 'yangchen',
   port: 5432, // default PostgreSQL port
+  connectionString: process.env.DATABASE_URL,
 });
 
 pool.connect((err, client, release) => {
