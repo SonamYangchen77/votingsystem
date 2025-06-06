@@ -9,16 +9,16 @@ const emitLiveResults = async (io) => {
 
     for (const election of elections) {
       const candidatesRes = await pool.query(`
-        SELECT 
-          c.id, c.full_name AS name, c.candidate_image_url AS imageUrl,
-          c.course AS party, c.position AS positionTitle,
-          COUNT(v.id) AS votes
-        FROM candidates c
-        LEFT JOIN votes v ON c.id = v.candidate_id
-        WHERE c.election_id = $1
-        GROUP BY c.id
-        ORDER BY votes DESC
-      `, [election.id]);
+         SELECT
+         c.id, c."full_name" AS name, c.candidate_image_url AS imageUrl,
+         c.course AS party, c.position AS positionTitle,
+         COUNT(v.id) AS votes
+         FROM candidates c
+         LEFT JOIN votes v ON c.id = v.candidate_id
+         WHERE c.election_id = $1
+         GROUP BY c.id
+         ORDER BY votes DESC
+         `, [election.id]);
 
       const candidates = candidatesRes.rows.map(c => ({
         ...c,
