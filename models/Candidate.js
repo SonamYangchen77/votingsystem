@@ -31,4 +31,46 @@ const Candidate = {
   }
 };
 
+Candidate.getByElectionId = async function (electionId) {
+  const client = await pool.connect();
+  try {
+    const res = await client.query(
+      'SELECT * FROM candidates WHERE election_id = $1',
+      [electionId]
+    );
+    return res.rows;
+  } catch (err) {
+    console.error('Error fetching candidates:', err);
+    throw err;
+  } finally {
+    client.release();
+  }
+};
+
+Candidate.getRecent = async function () {
+  const client = await pool.connect();
+  try {
+    const res = await client.query(`
+      SELECT * FROM candidates ORDER BY created_at DESC LIMIT 10
+    `);
+    return res.rows;
+  } finally {
+    client.release();
+  }
+};
+
+Candidate.getByElectionId = async function (electionId) {
+  const client = await pool.connect();
+  try {
+    const res = await client.query(
+      'SELECT * FROM candidates WHERE election_id = $1',
+      [electionId]
+    );
+    return res.rows;
+  } finally {
+    client.release();
+  }
+};
+
+
 module.exports = Candidate;

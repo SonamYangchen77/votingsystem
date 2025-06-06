@@ -2,40 +2,38 @@
 
 <link rel="stylesheet" href="/css/home.css">
 
-
 <div class="section">
   <div class="card">
-    <h3>Current Election</h3>
+    <h3></h3>
     <img src="/assets/fina.png" alt="UniVote Logo" style="width:100%; border-radius: 8px;">
-    <p>FNA election 2025</p>
-    <button onclick="window.location.href='/election'">Vote Now</button>
+    <p>Election 2025</p>
+    <a href="/select-election" class="btn btn-primary">Vote Now</a>
   </div>
 
   <div class="card">
     <h3>Quick Links</h3>
     <ul>
-      <li><a href="/candidates">View Candidates</a></li>
-      <li><a href="/guidelines">Voting Guidelines</a></li>
-      <li><a href="/schedule">Election Schedule</a></li>
+      <li><a href="/candidate">View Candidates</a></li>
+      <li><a href="/guideline">Voting Guidelines</a></li>
       <li><a href="/results">Results</a></li>
     </ul>
   </div>
 
-  <div class="card">
-    <h3>Upcoming Elections</h3>
-    <% if (upcomingElections.length === 0) { %>
-      <p>No upcoming elections at the moment.</p>
+  <div class="card candidate-carousel">
+    <h3>Meet the Candidates</h3>
+
+    <% if (candidates.length === 0) { %>
+      <p>No candidates available at the moment.</p>
     <% } else { %>
-      <ul>
-        <% upcomingElections.forEach(election => { %>
-          <li>
-            <strong><%= election.name %></strong><br />
-            Nomination: <%= new Date(election.nomination_date).toLocaleDateString() %><br />
-            Voting: <%= new Date(election.voting_start).toLocaleDateString() %> – <%= new Date(election.voting_end).toLocaleDateString() %><br />
-            Results: <%= new Date(election.results_date).toLocaleDateString() %>
-          </li>
+      <div class="carousel">
+        <% candidates.forEach((candidate, index) => { %>
+          <div class="carousel-slide <%= index === 0 ? 'active' : '' %>">
+            <img src="<%= candidate.candidate_image_url || '/assets/default.png' %>" alt="<%= candidate.full_name %>">
+            <h4><%= candidate.full_name %></h4>
+            <p><%= candidate.position %> • <%= candidate.course %> Year <%= candidate.year %></p>
+          </div>
         <% }) %>
-      </ul>
+      </div>
     <% } %>
   </div>
 </div>
@@ -43,40 +41,68 @@
 <%- include('partials/footer') %>
 
 <script>
-  const slides = document.querySelectorAll('.carousel-img');
-  let current = 0;
+  // --- Main Image Carousel ---
+  const imageSlides = document.querySelectorAll('.carousel-img');
+  let currentImage = 0;
 
-  function showSlide(index) {
-    slides.forEach((slide, i) => {
+  function showImageSlide(index) {
+    imageSlides.forEach((slide, i) => {
       slide.classList.remove('active');
       if (i === index) slide.classList.add('active');
     });
   }
 
-  function nextSlide() {
-    current = (current + 1) % slides.length;
-    showSlide(current);
+  function nextImageSlide() {
+    currentImage = (currentImage + 1) % imageSlides.length;
+    showImageSlide(currentImage);
   }
 
-  showSlide(current); // Show first slide initially
-  setInterval(nextSlide, 5000); // Change slide every 5 seconds
+  if (imageSlides.length > 0) {
+    showImageSlide(currentImage);
+    setInterval(nextImageSlide, 5000); // Every 5 seconds
+  }
 
+  // --- Candidate Carousel ---
+  const candidateSlides = document.querySelectorAll('.carousel-slide');
+  let currentCandidate = 0;
+
+  function showCandidateSlide(index) {
+    candidateSlides.forEach((slide, i) => {
+      slide.classList.remove('active');
+      if (i === index) slide.classList.add('active');
+    });
+  }
+
+  function nextCandidateSlide() {
+    currentCandidate = (currentCandidate + 1) % candidateSlides.length;
+    showCandidateSlide(currentCandidate);
+  }
+
+  if (candidateSlides.length > 0) {
+    showCandidateSlide(currentCandidate);
+    setInterval(nextCandidateSlide, 4000); // Every 4 seconds
+  }
+
+  // --- Navbar Toggle (optional but included for completeness) ---
   const navToggle = document.getElementById('navToggle');
   const navMenu = document.getElementById('navMenu');
-  const icon = navToggle.querySelector('i');
+  const icon = navToggle?.querySelector('i');
 
-  navToggle.addEventListener('click', () => {
-    navMenu.classList.toggle('show');
+  if (navToggle && icon) {
+    navToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('show');
 
-    // Toggle icon between bars and times
-    if (icon.classList.contains('fa-bars')) {
-      icon.classList.remove('fa-bars');
-      icon.classList.add('fa-times');
-    } else {
-      icon.classList.remove('fa-times');
-      icon.classList.add('fa-bars');
-    }
-  });
+      if (icon.classList.contains('fa-bars')) {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+      } else {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+      }
+    });
+  }
 </script>
+
+
 </body>
 </html>

@@ -47,4 +47,14 @@ const User = {
   },
 };
 
+User.getAllUsers = async () => {
+  const query = `
+    SELECT id, name, email, course AS department, year, 'active' AS status
+    FROM users
+    ORDER BY created_at DESC
+  `;
+  const { rows } = await pool.query(query);
+  return rows;
+};
+
 module.exports = User;

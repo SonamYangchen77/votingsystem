@@ -2,7 +2,7 @@
 
 /* Footer Base */
 footer {
-  background-color: #001845;
+  background-image: linear-gradient(to right, #1a5ed4, #0a1c44);
   color: #ffffff;
   padding: 2rem 1rem;
   text-align: center;

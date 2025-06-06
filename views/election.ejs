@@ -1,144 +1,192 @@
 <%- include('partials/header') %>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link rel="stylesheet" href="/css/election.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/election.css">
 
-<main>
-  <section class="election-overview">
-    <h2>Complete overview of all college elections – past, present, and future</h2>
-    <div class="button-group">
-      <button class="btn" data-url="/upcoming">Upcoming Elections</button>
-      <button class="btn active" data-url="/election">Ongoing Elections</button>
-      <button class="btn" data-url="/past">Completed Elections</button>
-    </div>
-  </section>
+  <main>
+    <section class="election-overview">
+      <h2>Complete overview of all college elections – past, present, and future</h2>
+      <div class="button-group">
+        <button class="btn" data-url="/upcoming">Upcoming Elections</button>
+        <button class="btn active" data-url="/election">Ongoing Elections</button>
+        <button class="btn" data-url="/past">Completed Elections</button>
+      </div>
+    </section>
 
-  <section class="archives">
-    <h3>Ongoing Elections</h3>
+    <section class="archives">
+      <h3>Ongoing Elections</h3>
 
-    <% if (!elections || elections.length === 0) { %>
-      <p>No ongoing elections today.</p>
-    <% } else { %>
-      <% elections.forEach(election => { %>
-        <div class="election-box">
-          <h4><%= election.name %></h4>
-          <p><strong>Deadline:</strong> <%= new Date(election.end_date).toLocaleDateString() %></p>
-          <p><%= election.description %></p>
+      <% if (!elections || elections.length===0) { %>
+        <p>No ongoing elections today.</p>
+        <% } else { %>
+          <% elections.forEach(election=> { %>
+            <div class="election-box">
+              <h4>
+                <%= election.name %>
+              </h4>
+              <p><strong>Deadline:</strong>
+                <%= new Date(election.end_date).toLocaleDateString() %>
+              </p>
+              <p>
+                <%= election.description %>
+              </p>
 
-          <% if (election.candidates && election.candidates.length > 0) { %>
-            <div class="candidates">
-              <% election.candidates.forEach(candidate => { %>
+              <% if (election.candidates && election.candidates.length> 0) { %>
+                <div class="candidates">
+                  <% election.candidates.forEach(candidate=> { %>
+                    <div class="candidate-block">
+                      <img src="<%= candidate.candidate_image_url || '/images/default.jpg' %>"
+                        alt="<%= candidate.name %>" />
+                      <div>
+                        <strong>
+                          <%= candidate.name %>
+                        </strong><br>
+                        <small>
+                          <%= candidate.course || 'N/A' %>
+                        </small><br>
+                        <small>Position: <%= candidate.position || 'N/A' %></small>
+                      </div>
+                      <form action="/vote/<%= election.id %>/<%= candidate.id %>" method="POST">
+
+                        <button class="vote-btn" type="button" data-candidate-name="<%= candidate.name %>"
+                          data-candidate-course="<%= candidate.course %>"
+                          data-candidate-position="<%= candidate.position %>">
+                          Vote
+                        </button>
+                      </form>
+                    </div>
+                    <% }) %>
+                </div>
                 <div class="candidate-block">
-                  <img src="<%= candidate.candidate_image_url || '/images/default.jpg' %>" alt="<%= candidate.name %>" />
+                  <img src="<%= candidate.candidate_image_url || '/images/default.jpg' %>" alt="<%= candidate.name %>"
+                    width="80" />
                   <div>
-                    <strong><%= candidate.name %></strong><br>
-                    <small><%= candidate.course || 'N/A' %></small><br>
+                    <strong>
+                      <%= candidate.name %>
+                    </strong><br>
+                    <small>Course: <%= candidate.course || 'N/A' %></small><br>
                     <small>Position: <%= candidate.position || 'N/A' %></small>
                   </div>
                   <form action="/vote/<%= election.id %>/<%= candidate.id %>" method="POST">
-
-                    <button class="vote-btn"
-                            type="button"
-                            data-candidate-name="<%= candidate.name %>"
-                            data-candidate-course="<%= candidate.course %>"
-                            data-candidate-position="<%= candidate.position %>">
+                    <button class="vote-btn" type="button" data-candidate-name="<%= candidate.name %>"
+                      data-candidate-course="<%= candidate.course %>"
+                      data-candidate-position="<%= candidate.position %>">
                       Vote
                     </button>
                   </form>
                 </div>
-              <% }) %>
+
+                <% } else { %>
+                  <p>No candidates for this election.</p>
+                  <% } %>
             </div>
-          <% } else { %>
-            <p>No candidates for this election.</p>
-          <% } %>
+            <% }) %>
+              <% } %>
+    </section>
+
+    <% if (query && query.success) { %>
+      <p class="success-msg">✅ Vote submitted successfully!</p>
+      <% } %>
+
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal" style="display:none;">
+          <div class="modal-content">
+            <span class="close" style="cursor:pointer;">&times;</span>
+            <h2>Confirm Your Vote</h2>
+            <p id="candidateDetails"></p>
+            <form id="confirmVoteForm" method="POST">
+              <button type="submit">Confirm</button>
+              <button type="button" id="cancelButton">Cancel</button>
+            </form>
+          </div>
         </div>
-      <% }) %>
-    <% } %>
-  </section>
+  </main>
 
-  <% if (query && query.success) { %>
-    <p class="success-msg">✅ Vote submitted successfully!</p>
-  <% } %>
+  <%- include('partials/footer') %>
 
-  <!-- Confirmation Modal -->
-  <div id="confirmationModal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <span class="close" style="cursor:pointer;">&times;</span>
-      <h2>Confirm Your Vote</h2>
-      <p id="candidateDetails"></p>
-      <form id="confirmVoteForm" method="POST">
-        <button type="submit">Confirm</button>
-        <button type="button" id="cancelButton">Cancel</button>
-      </form>
-    </div>
-  </div>
-</main>
+    <script>
+      const slides = document.querySelectorAll('.carousel-img');
+      let current = 0;
 
-<%- include('partials/footer') %>
-
-<script>
-  // Navigation toggle
-  const navToggle = document.getElementById('navToggle');
-  const navMenu = document.getElementById('navMenu');
-  const icon = navToggle?.querySelector('i');
-
-  navToggle?.addEventListener('click', () => {
-    navMenu?.classList.toggle('show');
-    icon?.classList.toggle('fa-bars');
-    icon?.classList.toggle('fa-times');
-  });
-
-  // Filter buttons
-  document.querySelectorAll('.button-group .btn').forEach(button => {
-    button.addEventListener('click', () => {
-      const url = button.getAttribute('data-url');
-      if (url) window.location.href = url;
-    });
-  });
-
-  // Vote button logic
-  document.querySelectorAll('.vote-btn').forEach(button => {
-    button.addEventListener('click', function () {
-      const form = this.closest('form');
-      if (!form) return;
-
-      const formAction = form.getAttribute('action');
-      if (!formAction) {
-        console.error('Missing form action');
-        return;
+      function showSlide(index) {
+        slides.forEach((slide, i) => {
+          slide.classList.remove('active');
+          if (i === index) slide.classList.add('active');
+        });
       }
 
-      const name = this.dataset.candidateName;
-      const course = this.dataset.candidateCourse || 'N/A';
-      const position = this.dataset.candidatePosition || 'N/A';
+      function nextSlide() {
+        current = (current + 1) % slides.length;
+        showSlide(current);
+      }
 
-      // Set candidate details inside modal
-      const detailsEl = document.getElementById('candidateDetails');
-      const confirmForm = document.getElementById('confirmVoteForm');
-      const modal = document.getElementById('confirmationModal');
+      showSlide(current); // Show first slide initially
+      setInterval(nextSlide, 5000); // Change slide every 5 seconds
 
-      detailsEl.innerText = `Name: ${name}\nCourse: ${course}\nPosition: ${position}`;
-      confirmForm.setAttribute('action', formAction);
-      modal.style.display = 'block';
-    });
-  });
 
-  // Cancel & close modal
-  document.getElementById('cancelButton')?.addEventListener('click', () => {
-    document.getElementById('confirmationModal').style.display = 'none';
-  });
+      // Navigation toggle
+      const navToggle = document.getElementById('navToggle');
+      const navMenu = document.getElementById('navMenu');
+      const icon = navToggle?.querySelector('i');
 
-  document.querySelector('.close')?.addEventListener('click', () => {
-    document.getElementById('confirmationModal').style.display = 'none';
-  });
+      navToggle?.addEventListener('click', () => {
+        navMenu?.classList.toggle('show');
+        icon?.classList.toggle('fa-bars');
+        icon?.classList.toggle('fa-times');
+      });
 
-  // Close modal on outside click
-  window.addEventListener('click', (event) => {
-    const modal = document.getElementById('confirmationModal');
-    if (event.target === modal) {
-      modal.style.display = 'none';
-    }
-  });
-</script>
-</body>
-</html>
+      // Filter buttons
+      document.querySelectorAll('.button-group .btn').forEach(button => {
+        button.addEventListener('click', () => {
+          const url = button.getAttribute('data-url');
+          if (url) window.location.href = url;
+        });
+      });
+
+      // Vote button logic
+      document.querySelectorAll('.vote-btn').forEach(button => {
+        button.addEventListener('click', function () {
+          const form = this.closest('form');
+          if (!form) return;
+
+          const formAction = form.getAttribute('action');
+          if (!formAction) {
+            console.error('Missing form action');
+            return;
+          }
+
+          const name = this.dataset.candidateName;
+          const course = this.dataset.candidateCourse || 'N/A';
+          const position = this.dataset.candidatePosition || 'N/A';
+
+          // Set candidate details inside modal
+          const detailsEl = document.getElementById('candidateDetails');
+          const confirmForm = document.getElementById('confirmVoteForm');
+          const modal = document.getElementById('confirmationModal');
+
+          detailsEl.innerText = `Name: ${name}\nCourse: ${course}\nPosition: ${position}`;
+          confirmForm.setAttribute('action', formAction);
+          modal.style.display = 'block';
+        });
+      });
+
+      // Cancel & close modal
+      document.getElementById('cancelButton')?.addEventListener('click', () => {
+        document.getElementById('confirmationModal').style.display = 'none';
+      });
+
+      document.querySelector('.close')?.addEventListener('click', () => {
+        document.getElementById('confirmationModal').style.display = 'none';
+      });
+
+      // Close modal on outside click
+      window.addEventListener('click', (event) => {
+        const modal = document.getElementById('confirmationModal');
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    </script>
+    </body>
+
+    </html>

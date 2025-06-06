@@ -11,25 +11,25 @@
 
 <body>
     <div class="sidebar">
-    <div class="logo">
-        <img src="/assets/logo1.png" alt="UniVote">
-        <h2>UniVote</h2>
+        <div class="logo">
+            <img src="/assets/logo1.png" alt="UniVote">
+            <h2>UniVote</h2>
+        </div>
+        <nav>
+            <a href="/admin/dashboard" class="active"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="/admin/adminCandidate"><i class="fas fa-users"></i> Candidates</a>
+            <a href="/admin/adminElection"><i class="fas fa-vote-yea"></i> Elections</a>
+            <a href="/admin/adminResult"><i class="fas fa-chart-bar"></i> Results</a>
+            <a href="/admin/adminUser"><i class="fas fa-user"></i> Users</a>
+        </nav>
+        <div class="logout-container">
+            <form action="/admin/logout" method="POST">
+                <button type="submit" class="logout-button">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </form>
+        </div>
     </div>
-    <nav>
-        <a href="/admin/dashboard" class="active"><i class="fas fa-home"></i> Dashboard</a>
-        <a href="/admin/adminCandidate"><i class="fas fa-users"></i> Candidates</a>
-        <a href="/admin/adminElection"><i class="fas fa-vote-yea"></i> Elections</a>
-        <a href="/admin/adminResult"><i class="fas fa-chart-bar"></i> Results</a>
-        <a href="/admin/adminUser"><i class="fas fa-user"></i> Users</a>
-    </nav>
-    <div class="logout-container">
-        <form action="/admin/logout" method="POST">
-            <button type="submit" class="logout-button">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-        </form>
-    </div>
-</div>
 
     <main>
         <header>
@@ -89,20 +89,32 @@
                 </div>
             </div>
 
-            <div class="quick-actions">
+            <<div class="quick-actions">
                 <h2>Quick Actions</h2>
-                <button class="action-btn create-election">
-                    <i class="fas fa-plus"></i> Create Election
-                </button>
-                <button class="action-btn view-reports">
-                    <i class="fas fa-file-alt"></i> View Reports
-                </button>
-                <button class="action-btn add-candidate">
-                    <i class="fas fa-user-plus"></i> Add Candidate
-                </button>
-            </div>
+
+                <a href="/admin/adminElection">
+                    <button class="action-btn create-election">
+                        <i class="fas fa-plus"></i> Create Election
+                    </button>
+                </a>
+
+                <a href="/admin/adminResult">
+                    <button class="action-btn view-reports">
+                        <i class="fas fa-file-alt"></i> View Reports
+                    </button>
+                </a>
+
+                <a href="/admin/adminCandidate">
+                    <button class="action-btn add-candidate">
+                        <i class="fas fa-user-plus"></i> Add Candidate
+                    </button>
+                </a>
         </div>
-        <h1><%= message %></h1>
+
+        </div>
+        <h1>
+            <%= message %>
+        </h1>
 
     </main>
     <script>

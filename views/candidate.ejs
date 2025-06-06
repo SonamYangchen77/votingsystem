@@ -5,82 +5,76 @@
 <main>
   <h2 class="title">View and learn about the candidates running in different elections</h2>
 
-  <!-- Dropdown for election selection -->
-  <section class="dropdown-group" style="margin-bottom: 20px;">
-    <label for="electionSelect"><strong>Select Election:</strong></label>
-    <select id="electionSelect" name="electionSelect">
-      <option value="/candidate">All Candidates</option>
-
-      <optgroup label="FINA">
-        <option value="/candidate/FINA President">FINA President</option>
-        <option value="/candidate/FINA Secretary">FINA Secretary</option>
-        <option value="/candidate/FINA Representative">FINA Representative</option>
-      </optgroup>
-
-      <optgroup label="Unit">
-        <option value="/candidate/Unit SUU">SUU</option>
-        <option value="/candidate/Unit Culture">Culture</option>
-      </optgroup>
-
-      <optgroup label="Forum">
-        <option value="/candidate/Forum Mathematic">Mathematic</option>
-        <option value="/candidate/Forum Physical Science">Physical Science</option>
-      </optgroup>
-
-      <optgroup label="Resident">
-        <option value="/candidate/Resident Norbuling">Norbuling</option>
-      </optgroup>
-    </select>
-  </section>
-
   <section class="candidate-list">
     <h3>
       <%= (typeof selectedPosition !== 'undefined' && selectedPosition) ? selectedPosition.toUpperCase() + ' Candidates' : 'All Candidates' %>
     </h3>
 
     <% if (candidates && candidates.length > 0) { %>
-      <ul>
-        <% candidates.forEach(candidate => { %>
-          <li class="candidate-card" style="border:1px solid #ccc; padding:15px; margin-bottom:15px; border-radius:5px;">
-            <img src="<%= candidate.candidate_image_url %>" alt="Image of <%= candidate.full_name %>" width="150" height="150" style="float:left; margin-right:15px; border-radius:5px;">
-            <h4><%= candidate.full_name %></h4>
-            <p><strong>Position:</strong> <%= candidate.position %></p>
-            <p><strong>Course:</strong> <%= candidate.course %> - Year <%= candidate.year %></p>
-            <p><strong>Election:</strong> <%= candidate.election_name %></p>
+      <% 
+        // Group candidates by election_name
+        const groupedCandidates = candidates.reduce((groups, candidate) => {
+          if (!groups[candidate.election_name]) {
+            groups[candidate.election_name] = [];
+          }
+          groups[candidate.election_name].push(candidate);
+          return groups;
+        }, {});
+      %>
 
-            <button class="details-btn" data-id="<%= candidate.id %>" style="margin-top:10px; padding:6px 12px; cursor:pointer;">Details</button>
+      <% Object.keys(groupedCandidates).forEach(electionName => { %>
+        <section class="candidate-group" style="margin-bottom: 40px;">
+          <h4 style="border-bottom: 2px solid #333; padding-bottom: 5px; margin-bottom: 20px;"><%= electionName %></h4>
+          <ul style="list-style:none; padding-left: 0;">
+            <% groupedCandidates[electionName].forEach(candidate => { %>
+              <li class="candidate-card" style="border:1px solid #ccc; padding:15px; margin-bottom:15px; border-radius:5px; overflow: auto;">
+                <img src="<%= candidate.candidate_image_url || '/images/default.jpg' %>" alt="Image of <%= candidate.full_name %>" width="150" height="150" style="float:left; margin-right:15px; border-radius:5px;">
+                <h4><%= candidate.full_name %></h4>
+                <p><strong>Position:</strong> <%= candidate.position %></p>
+                <p><strong>Course:</strong> <%= candidate.course %> - Year <%= candidate.year %></p>
 
-            <div class="candidate-details" style="display:none; clear:both; margin-top:15px; border-top:1px solid #ddd; padding-top:10px;">
-              <p><strong>Manifesto:</strong> <%= candidate.manifesto %></p>
-              <p><strong>Past Experiences:</strong> <%= candidate.past_experiences || 'No details available.' %></p>
-            </div>
-          </li>
-        <% }) %>
-      </ul>
+                <button class="details-btn" data-id="<%= candidate.id %>" style="margin-top:10px; padding:6px 12px; cursor:pointer;">Details</button>
+
+                <div class="candidate-details" style="display:none; clear:both; margin-top:15px; border-top:1px solid #ddd; padding-top:10px;">
+                  <p><strong>Manifesto:</strong> <%= candidate.manifesto %></p>
+                  <p><strong>Past Experiences:</strong> <%= candidate.past_experiences || 'No details available.' %></p>
+                </div>
+              </li>
+            <% }) %>
+          </ul>
+        </section>
+      <% }) %>
+
     <% } else if (selectedPosition) { %>
       <p>No candidates available for <%= selectedPosition %>.</p>
     <% } else { %>
       <p>No candidates found.</p>
     <% } %>
   </section>
-
-  <section class="info-note">
-    <div class="note-left">
-      <h4>NOTE</h4>
-      <p><strong>Read the Manifesto Carefully Before Voting</strong><br>Understand what each candidate stands for.</p>
-      <p><strong>Remember to Vote on Time</strong><br>"Voting is open from April 20, 9:00 AM to April 21, 5:00 PM."</p>
-    </div>
-
-    <div class="note-right">
-      <p><strong>Check Candidate Backgrounds</strong><br>"Look into each candidate’s leadership experience and goals before deciding."</p>
-      <p><strong>Support Respectful Campaigning</strong><br>"Let’s keep the election fair, kind, and student-focused."</p>
-    </div>
-  </section>
 </main>
 
 <%- include('partials/footer') %>
 
 <script>
+   const slides = document.querySelectorAll('.carousel-img');
+  let current = 0;
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.remove('active');
+      if (i === index) slide.classList.add('active');
+    });
+  }
+
+  function nextSlide() {
+    current = (current + 1) % slides.length;
+    showSlide(current);
+  }
+
+  showSlide(current); // Show first slide initially
+  setInterval(nextSlide, 5000); // Change slide every 5 seconds
+
+  
   // Dropdown navigation
   document.getElementById('electionSelect').addEventListener('change', (e) => {
     const value = e.target.value;
@@ -104,27 +98,6 @@
     });
   });
 
-  // Carousel functionality (if applicable)
-  const slides = document.querySelectorAll('.carousel-img');
-  let current = 0;
-
-  function showSlide(index) {
-    slides.forEach((slide, i) => {
-      slide.classList.remove('active');
-      if (i === index) slide.classList.add('active');
-    });
-  }
-
-  function nextSlide() {
-    current = (current + 1) % slides.length;
-    showSlide(current);
-  }
-
-  if (slides.length > 0) {
-    showSlide(current);
-    setInterval(nextSlide, 5000);
-  }
-
   // Navigation toggle (if applicable)
   const navToggle = document.getElementById('navToggle');
   if (navToggle) {
@@ -143,6 +116,7 @@
       }
     });
   }
+
 </script>
 
 </body>

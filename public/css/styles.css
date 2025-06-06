@@ -8,13 +8,12 @@
 body {
     background-image: url('/assets/bg.png');
     background-size: cover;
-    /* Ensures the image covers the entire background */
     background-position: center;
-    /* Centers the image */
     background-repeat: no-repeat;
     font-family: 'Segoe UI', sans-serif;
     background-color: #d1dbf0;
     color: #000;
+    padding-top: 100px; /* Offset for fixed header */
 }
 
 /* Header styling */
@@ -23,45 +22,45 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    background-color: #001845;
+    background-image: linear-gradient(to right, #1a5ed4, #0a1c44);
     color: white;
     padding: 1rem 2rem;
     display: flex;
-    height: 90px;
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    height: 90px;
     z-index: 1000;
 }
 
 header .logo {
-    height: 90px; /* Set the fixed height for the logo */
-    width: auto; /* Ensures the logo's width adjusts proportionally */
+    height: 90px;
+    width: auto;
     margin-right: 15px;
-    margin-left: 0px;
 }
+
 /* Main container */
 .container {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-around;
-    align-items: center;
+    align-items: flex-start;
     min-height: 75vh;
     padding: 2rem;
-    margin-top: 80px;
-    /* Adjust based on header height */
+    gap: 2rem;
 }
 
-/* Intro section */
-/* Box for Intro Section */
+/* Intro box */
 .intro-box {
-    background-color: #f1f1f1; /* Light background for the box */
+    background-color: #f1f1f1;
     padding: 2rem;
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
-    max-width: 600px; /* Limits the width */
-    margin: 0 auto; /* Centers the box horizontally */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-/* Styling the content inside the intro section */
 .intro h2 {
     font-size: 2rem;
     margin-bottom: 1rem;
@@ -74,13 +73,14 @@ header .logo {
 
 .intro button {
     padding: 0.75rem 1.5rem;
-    background-color: #001845;
+    background-image: linear-gradient(to right, #0a1c44, #1a5ed4);
     color: white;
     border: none;
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
 }
 
 .intro button:hover {
@@ -93,7 +93,8 @@ header .logo {
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-    width: 300px;
+    width: 100%;
+    max-width: 350px;
 }
 
 .login-box h3 {
@@ -132,16 +133,19 @@ header .logo {
 .login-box button {
     width: 100%;
     padding: 0.75rem;
-    background-color: #001845;
+    background-image: linear-gradient(to right, #1a5ed4, #0a1c44);
     color: white;
     border: none;
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
+
 .login-box button:hover {
     background-color: #002d89;
 }
+
 .login-box .extras {
     margin-top: 1rem;
     text-align: center;
@@ -153,6 +157,10 @@ header .logo {
     text-decoration: none;
 }
 
+.login-box .extras a:hover {
+    text-decoration: underline;
+}
+
 .login-box .extras p {
     margin-top: 0.5rem;
     font-size: 0.9rem;
@@ -160,52 +168,38 @@ header .logo {
 
 /* Footer */
 footer {
-    background-color: #001845;
+    background-image: linear-gradient(to right, #0a1c44, #1a5ed4);
     color: white;
-    padding: 1rem 2rem;
+    padding: 1.5rem 2rem;
     text-align: center;
     font-size: 0.9rem;
+    margin-top: 2rem;
 }
 
 .footer-links,
 .social {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
     margin-bottom: 0.5rem;
 }
 
 .footer-links a,
 .social a {
-    margin: 0 10px;
     color: #fff;
     text-decoration: none;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-        padding: 1rem;
-        text-align: center;
-    }
-
-    .intro,
-    .login-box {
-        width: 90%;
-        max-width: 100%;
-    }
-
-    header {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .intro h2 {
-        font-size: 1.5rem;
-    }
+.footer-links a:hover,
+.social a:hover {
+    text-decoration: underline;
 }
 
 /* Signup box */
 .signup-box {
     background-color: #f7f9fc;
+    width: 100%;
     max-width: 400px;
     margin: 60px auto;
     padding: 30px;
@@ -230,17 +224,86 @@ footer {
 .signup-box button {
     width: 100%;
     padding: 10px;
-    background-color: #011b52;
+    background-image: linear-gradient(to right, #0a1c44, #1a5ed4);
     color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .signup-box button:hover {
-    background-color: #002d89; 
+    background-color: #002d89;
 }
 
 .signup-box p {
     text-align: center;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 992px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .intro h2 {
+        font-size: 1.75rem;
+    }
+
+    .intro p,
+    .login-box p {
+        font-size: 1rem;
+    }
+
+    .intro button,
+    .login-box button {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        height: auto;
+        padding: 1rem;
+    }
+
+    header .logo {
+        height: 60px;
+        margin-bottom: 0.5rem;
+    }
+
+    .container {
+        padding: 1rem;
+    }
+
+    .intro h2 {
+        font-size: 1.5rem;
+    }
+
+    .intro p {
+        font-size: 0.95rem;
+    }
+
+    .intro button,
+    .login-box button {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.2rem;
+    }
+
+    footer {
+        font-size: 0.8rem;
+    }
+
+    .footer-links,
+    .social {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
 }

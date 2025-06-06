@@ -1,0 +1,113 @@
+<main style="max-width: 600px; margin: 2rem auto; padding: 1rem;">
+    <h2>Select an Election to Vote In</h2>
+
+    <style>
+        main {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        main h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 1.5rem;
+        }
+
+        main form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        main label {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        main select {
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        main button {
+            padding: 0.6rem 1.2rem;
+            background-image: linear-gradient(to right, #1a5ed4, #0a1c44);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        main button:hover {
+            background-color: #0056b3;
+        }
+
+        main p {
+            text-align: center;
+            color: #666;
+        }
+
+
+        .back-link {
+            display: inline-block;
+            text-align: center;
+            margin-top: 1.5rem;
+            text-decoration: none;
+            background-image: linear-gradient(to right, #0a1c44, #0056b3);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-link:hover {
+            background-color: #033490;
+        }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+                <% if (elections.length===0) { %>
+                    <p>No elections are currently available.</p>
+                    <% } else { %>
+                        <form action="/election/vote" method="GET">
+                            <label for="election">Choose an election:</label>
+                            <select name="electionId" id="election" required>
+                                <option value="" disabled selected>Select an election</option>
+                                <% elections.forEach(election=> { %>
+                                    <option value="<%= election.id %>">
+                                        <%= election.name %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                            <button type="submit">Continue</button>
+                        </form>
+                        <% } %>
+
+                            <!-- Back Button -->
+                            <a href="/home" class="back-link">← Back to Home</a>
+</main>

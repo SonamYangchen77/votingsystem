@@ -13,100 +13,8 @@
     line-height: 1.6;
   }
   
-  header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #001845;
-    color: white;
-    padding: 1rem 2rem;
-    display: flex;
-    height: 90px;
-    align-items: center;
-    z-index: 1000;
-}
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-right: auto; /* Pushes nav to the right */
-}
 
-.logo img {
-    max-height: 90px;
-    max-width: 150px;
-    object-fit: contain;
-    margin-left: -2rem; /* Cancels out header padding to touch screen edge */
-}
-
-.logo span {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #facc15;
-}
-  nav {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-  
-  nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    position: relative;
-  }
-  
-  nav a:hover {
-    color: #facc15;
-  }
-  
-  .dropdown {
-    position: relative;
-  }
-  
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    top: 35px;
-    background-color: #334155;
-    padding: 0.5rem 0;
-    min-width: 150px;
-    border-radius: 4px;
-    z-index: 1000;
-  }
-  
-  .dropdown-content a {
-    display: block;
-    color: white;
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-  }
-  
-  .dropdown-content a:hover {
-    background-color: #1e293b;
-  }
-  
-  .dropdown:hover .dropdown-content {
-    display: block;
-  }
-  
-  .carousel {
-    position: relative;
-    height: 400px;
-    overflow: hidden;
-  }
-  
-  .carousel-img {
-    width: 100%;
-    display: none;
-  }
-  
-  .carousel-img.active {
-    display: block;
-  }
   
   .overlay-text {
     position: absolute;
@@ -346,3 +254,66 @@
     }
   }
   
+
+  /* === BUTTON ENHANCEMENTS === */
+.primary-btn,
+.secondary-btn {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  background-image: linear-gradient(to right, #1a5ed4, #003399);
+}
+
+.secondary-btn {
+  background-image: linear-gradient(to right, #0a1c44, #1a5ed4);
+}
+
+.primary-btn:hover,
+.secondary-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+  background-position: right center;
+  filter: brightness(1.05);
+}
+
+.primary-btn:active,
+.secondary-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+
+/* === CARD ENHANCEMENTS === */
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 28%;
+  min-width: 250px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Fix missing value */
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.card:hover {
+  background-color: #e8f0fe;
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+
+/* === OPTIONAL: Add hover animation to feature icons or circles === */
+.circle {
+  background-color: #002366;
+  transition: transform 0.4s ease, background-color 0.3s ease;
+}
+
+.step:hover .circle {
+  transform: rotate(360deg) scale(1.1);
+  background-color: #1a5ed4;
+}

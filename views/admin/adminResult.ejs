@@ -2,41 +2,41 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>UniVote - Election Results</title>
-  <link rel="stylesheet" href="/css/adminResult.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/adminResult.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
 
 <body>
-      <div class="sidebar">
+  <div class="sidebar">
     <div class="logo">
-        <img src="/assets/logo1.png" alt="UniVote">
-        <h2>UniVote</h2>
+      <img src="/assets/logo1.png" alt="UniVote" />
+      <h2>UniVote</h2>
     </div>
     <nav>
-        <a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a>
-        <a href="/admin/adminCandidate"><i class="fas fa-users"></i> Candidates</a>
-        <a href="/admin/adminElection"><i class="fas fa-vote-yea"></i> Elections</a>
-        <a href="/admin/adminResult" class="active"><i class="fas fa-chart-bar"></i> Results</a>
-        <a href="/admin/adminUser"><i class="fas fa-user"></i> Users</a>
+      <a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a>
+      <a href="/admin/adminCandidate"><i class="fas fa-users"></i> Candidates</a>
+      <a href="/admin/adminElection"><i class="fas fa-vote-yea"></i> Elections</a>
+      <a href="/admin/adminResult" class="active"><i class="fas fa-chart-bar"></i> Results</a>
+      <a href="/admin/adminUser"><i class="fas fa-user"></i> Users</a>
     </nav>
     <div class="logout-container">
-        <form action="/admin/logout" method="POST">
-            <button type="submit" class="logout-button">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-        </form>
+      <form action="/admin/logout" method="POST">
+        <button type="submit" class="logout-button">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </form>
     </div>
-</div>
+  </div>
+
   <main>
     <header>
       <div class="header-content">
         <h1>Election Results Dashboard</h1>
         <div class="header-actions">
           <button class="export-btn"><i class="fas fa-file-export"></i> Export Results</button>
-          <button class="share-btn"><i class="fas fa-share-alt"></i> Share Data</button>
         </div>
       </div>
     </header>
@@ -57,108 +57,178 @@
     </section>
 
     <section class="results-container" id="results-container">
-      <!-- Election results will be injected here -->
+      <p class="loading">Loading results...</p>
     </section>
   </main>
 
   <script>
-  // Function to format timestamp (keep this from your original code)
-  const formatTimestamp = dateStr => {
-    const date = new Date(dateStr);
-    return `Deadline: ${date.toLocaleDateString('en-US', {
-      month: 'long', day: 'numeric', year: 'numeric'
-    })} at ${date.toLocaleTimeString('en-US', {
-      hour: 'numeric', minute: 'numeric', hour12: true
-    })}`;
-  };
+    const formatTimestamp = (dateStr) => {
+      const date = new Date(dateStr);
+      return `Deadline: ${date.toLocaleDateString(undefined, {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })} at ${date.toLocaleTimeString(undefined, {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: false,
+      })}`;
+    };
 
-  // Function to animate progress bars (keep your existing one)
-  const animateProgressBars = () => {
-    document.querySelectorAll('.progress').forEach(bar => {
-      const width = bar.style.width;
-      bar.style.width = '0';
-      setTimeout(() => {
-        bar.style.width = width;
-      }, 100);
-    });
-  };
 
-  // Your fetchData function goes here
-  const fetchData = async () => {
-    try {
-      const [electionsRes, votesRes] = await Promise.all([
-        fetch('/api/elections'),
-        fetch('/api/votes')
-      ]);
+    const animateProgressBars = () => {
+      document.querySelectorAll(".progress").forEach((bar) => {
+        const width = bar.dataset.width || "0%";
+        bar.style.width = "0";
+        setTimeout(() => {
+          bar.style.width = width;
+        }, 100);
+      });
+    };
 
-      const elections = await electionsRes.json();
-      const votes = await votesRes.json();
 
-      document.getElementById('total-elections').textContent = elections.length;
-      document.getElementById('total-votes').textContent = votes.length;
-
-      const totalVoters = elections.reduce((sum, e) => sum + (e.totalVoters || 0), 0);
-      const avgTurnout = totalVoters ? ((votes.length / totalVoters) * 100).toFixed(1) : 0;
-      document.getElementById('avg-turnout').textContent = `${avgTurnout}%`;
-
-      const groupedVotes = votes.reduce((acc, vote) => {
-        if (!acc[vote.electionId]) acc[vote.electionId] = {};
-        if (!acc[vote.electionId][vote.candidateId]) acc[vote.electionId][vote.candidateId] = 0;
-        acc[vote.electionId][vote.candidateId]++;
-        return acc;
-      }, {});
-
-      const container = document.getElementById('results-container');
-      container.innerHTML = '';  // clear previous results
+    const exportResultsAsCSV = (elections, groupedVotes) => {
+      // CSV header
+      const headers = [
+        "Election Name",
+        "Election Deadline",
+        "Candidate Name",
+        "Position",
+        "Votes Received",
+        "Vote Percentage",
+      ];
+      const rows = [headers.join(",")];
 
       elections.forEach(election => {
-        const totalVotes = Object.values(groupedVotes[election._id] || {}).reduce((a, b) => a + b, 0);
+        const totalVotes = Object.values(groupedVotes[election.id] || {}).reduce((a, b) => a + b, 0);
 
-        const header = `
+        (election.candidates || []).forEach(candidate => {
+          const voteCount = groupedVotes[election.id]?.[candidate.id] || 0;
+          const votePercent = totalVotes ? ((voteCount / totalVotes) * 100).toFixed(1) : 0;
+          const row = [
+            `"${election.name}"`,
+            `"${new Date(election.end_date).toLocaleString()}"`,
+            `"${candidate.full_name}"`,
+            `"${candidate.position || 'N/A'}"`,
+            voteCount,
+            votePercent + "%"
+          ];
+          rows.push(row.join(","));
+        });
+      });
+
+      const csvContent = rows.join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "univote_election_results.csv";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    };
+
+    const fetchData = async () => {
+      try {
+        const [electionsRes, votesRes, candidatesRes] = await Promise.all([
+          fetch("/api/elections"),
+          fetch("/api/votes"),
+          fetch("/api/candidates"),
+        ]);
+
+        if (!electionsRes.ok || !votesRes.ok || !candidatesRes.ok) {
+          throw new Error("Failed to fetch one or more resources.");
+        }
+
+        const elections = await electionsRes.json();
+        const votes = await votesRes.json();
+        const candidates = await candidatesRes.json();
+
+        const candidatesByElection = candidates.reduce((acc, candidate) => {
+          (acc[candidate.election_id] ||= []).push(candidate);
+          return acc;
+        }, {});
+
+        elections.forEach(election => {
+          election.candidates = candidatesByElection[election.id] || [];
+        });
+
+        document.getElementById("total-elections").textContent = elections.length;
+        document.getElementById("total-votes").textContent = votes.length;
+
+        const totalVoters = elections.reduce((sum, e) => sum + (e.totalVoters || 0), 0);
+        const avgTurnout = totalVoters ? ((votes.length / totalVoters) * 100).toFixed(1) : 0;
+        document.getElementById("avg-turnout").textContent = `${avgTurnout}%`;
+
+        const groupedVotes = votes.reduce((acc, vote) => {
+          (acc[vote.election_id] ||= {});
+          (acc[vote.election_id][vote.candidate_id] ||= 0)++;
+          return acc;
+        }, {});
+
+        const container = document.getElementById("results-container");
+        container.innerHTML = "";
+
+        if (elections.length === 0) {
+          container.innerHTML = "<p>No elections available.</p>";
+          return;
+        }
+
+        elections.forEach((election) => {
+          const totalVotes = Object.values(groupedVotes[election.id] || {}).reduce((a, b) => a + b, 0);
+
+          const header = `
           <div class="election-header">
             <h2>${election.name}</h2>
-            <span class="timestamp">${formatTimestamp(election.endDate)}</span>
+            <span class="timestamp">${formatTimestamp(election.end_date)}</span>
             <span class="total-votes">Total Votes: ${totalVotes}</span>
           </div>`;
 
-        const candidatesHTML = (election.candidates || []).map(candidate => {
-          const voteCount = groupedVotes[election._id]?.[candidate._id] || 0;
-          const votePercent = totalVotes ? ((voteCount / totalVotes) * 100).toFixed(0) : 0;
-
-          return `
-            <div class="candidate-card">
-              <div class="candidate-info">
-                <img src="${candidate.image || '/images/placeholder.png'}" alt="${candidate.name}">
-                <div class="candidate-details">
-                  <h3>${candidate.name}</h3>
-                  <p class="position">${candidate.position}</p>
-                  <div class="progress-bar">
-                    <div class="progress" style="width: ${votePercent}%"></div>
+          const candidatesHTML = (election.candidates || [])
+            .map(candidate => {
+              const voteCount = groupedVotes[election.id]?.[candidate.id] || 0;
+              const votePercent = totalVotes ? ((voteCount / totalVotes) * 100).toFixed(1) : 0;
+              return `
+              <div class="candidate-card">
+                <div class="candidate-info">
+                  <img src="${candidate.candidate_image_url || "/images/placeholder.png"}" alt="${candidate.full_name}" />
+                  <div class="candidate-details">
+                    <h3>${candidate.full_name}</h3>
+                    <p class="position">${candidate.position || "N/A"}</p>
+                    <div class="progress-bar">
+                      <div class="progress" data-width="${votePercent}%" style="width: ${votePercent}%"></div>
+                    </div>
+                    <p class="votes">${voteCount} vote${voteCount !== 1 ? "s" : ""} (${votePercent}%)</p>
                   </div>
-                  <p class="votes">${voteCount} votes</p>
                 </div>
-              </div>
-            </div>`;
-        }).join('');
+              </div>`;
+            }).join("");
 
-        container.innerHTML += `<div class="election-result">${header}<div class="candidates-grid">${candidatesHTML}</div></div>`;
-      });
+          container.innerHTML += `
+          <div class="election-result">
+            ${header}
+            <div class="candidates-grid">${candidatesHTML}</div>
+          </div>`;
+        });
 
-      animateProgressBars();
+        animateProgressBars();
 
-    } catch (error) {
-      console.error('Error loading results:', error);
-    }
-  };
+        // Attach export button handler here to ensure data is ready
+        const exportBtn = document.querySelector(".export-btn");
+        if (exportBtn) {
+          exportBtn.onclick = () => exportResultsAsCSV(elections, groupedVotes);
+        }
 
-  // Run fetchData when page loads
-  document.addEventListener('DOMContentLoaded', () => {
-    fetchData();
+      } catch (error) {
+        console.error("Error loading results:", error);
+        document.getElementById("results-container").innerHTML = `<p class="error">Failed to load election results.</p>`;
+      }
+    };
 
-    // Your other event listeners, like export and share buttons, can go here
-  });
-</script>
-
+    document.addEventListener("DOMContentLoaded", fetchData);
+  </script>
 </body>
 
 </html>

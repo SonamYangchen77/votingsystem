@@ -1,130 +1,190 @@
-/* Fixed Header */
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: #001845; /* Deep blue */
-  color: white;
-  padding: 1rem 2rem;
-  display: flex;
-  height: 90px;
-  align-items: center;
-  z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* Base Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Add padding to body so content scrolls under header */
 body {
-  margin: 0;
-  padding-top: 90px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f6fa;
+  color: #000;
+  padding-top: 90px; /* offset for fixed header */
+}
+
+/* Header */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-image: linear-gradient(to right, #0a1c44, #1a5ed4);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    height: 90px;
+    align-items: center;
+    z-index: 1000;
 }
 
 /* Logo */
 .logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-right: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: auto;
 }
 
 .logo img {
-  max-height: 90px;
-  max-width: 150px;
-  object-fit: contain;
-  margin-left: -2rem;
+    max-height: 90px;
+    max-width: 150px;
+    object-fit: contain;
+    margin-left: -2rem;
 }
 
 .logo span {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #facc15; /* Bright yellow */
+    font-size: 2rem;
+    font-weight: bold;
+    color: #facc15;
 }
 
-/* Nav */
+/* Navigation */
 nav {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
 }
 
 nav a {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  position: relative;
-  transition: color 0.3s;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.2rem;
+    position: relative;
 }
 
 nav a:hover {
-  color: #facc15;
+    color: #facc15;
+}
+
+/* Navigation hover underline animation */
+nav a::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: #facc15;
+    transition: width 0.3s ease-in-out;
+}
+
+nav a:hover::after {
+    width: 100%;
 }
 
 /* Dropdown */
 .dropdown {
-  position: relative;
+    position: relative;
 }
 
 .dropdown-content {
-  display: none;
-  position: absolute;
-  top: 35px;
-  background-color: #334155;
-  padding: 0.5rem 0;
-  min-width: 150px;
-  border-radius: 4px;
-  z-index: 1000;
+    display: none;
+    position: absolute;
+    top: 35px;
+    background-image: linear-gradient(to right, #0a1c44, #1a5ed4);
+    padding: 0.5rem 0;
+    min-width: 150px;
+    border-radius: 4px;
+    z-index: 1000;
 }
 
 .dropdown-content a {
-  display: block;
-  color: white;
-  padding: 0.5rem 1rem;
-  text-decoration: none;
-  transition: background-color 0.3s;
+    display: block;
+    color: white;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    font-size: 1.1rem;
 }
 
 .dropdown-content a:hover {
-  background-color: #1e293b;
+    background-color: #1e293b;
 }
 
 .dropdown:hover .dropdown-content {
-  display: block;
+    display: block;
 }
 
-/* Logout button */
+/* Toggle button for mobile */
+.nav-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    display: none;
+    z-index: 1001;
+}
+
+/* Responsive nav menu (mobile) */
+@media (max-width: 768px) {
+    .nav-toggle {
+        display: block;
+        position: absolute;
+        top: 30px;
+        right: 20px;
+    }
+
+    .nav-menu {
+        flex-direction: column;
+        position: absolute;
+        top: 90px;
+        right: 0;
+        background-color: #001845;
+        width: 100%;
+        display: none;
+        padding: 1rem;
+    }
+
+    .nav-menu.show {
+        display: flex;
+    }
+
+    .nav-menu a,
+    .nav-menu .dropdown {
+        margin: 10px 0;
+    }
+}
+
+/* Logout Button */
 .logout-button {
   padding: 8px 16px;
-  background-color: #4f7fd9;
+  background-image: linear-gradient(to right, #1a5ed4, #0a1c44);
   color: white;
-  text-decoration: none;
   border-radius: 4px;
   font-weight: bold;
   transition: background-color 0.3s;
+  text-decoration: none;
 }
 
 .logout-button:hover {
-  background-color: #0339ce;
+  background-image: linear-gradient(to right, #0a1c44, #1a5ed4);
 }
 
-/* Carousel */
+/* ================= Carousel Styles ================= */
+
+/* Carousel container */
 .carousel {
-  position: relative;
-  height: 400px;
+  margin-top: 0;
+  padding-top: 0;
   overflow: hidden;
-  margin-top: 1rem;
 }
 
+/* Carousel images - full width and block to avoid inline gaps */
 .carousel-img {
-  position: absolute;
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
+  height: auto;
 }
 
 .carousel-img.active {
@@ -132,7 +192,51 @@ nav a:hover {
   z-index: 1;
 }
 
-/* Toggle button */
+/* ================= Responsive ================= */
+
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: block;
+  }
+
+  .nav-menu {
+    position: absolute;
+    top: 90px;
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    background-color: #001845;
+    display: none;
+    padding: 1rem;
+    gap: 0;
+  }
+
+  .nav-menu.show {
+    display: flex;
+  }
+
+  .nav-menu a,
+  .dropdown {
+    width: 100%;
+    padding: 0.75rem 1rem;
+  }
+
+  .dropdown-content {
+    position: static;
+    background-color: #001845;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .dropdown-content a {
+    border-top: 1px solid #334155;
+  }
+}
+
+
+
+/* Nav Toggle (Mobile) */
 .nav-toggle {
   background: none;
   border: none;
@@ -143,25 +247,51 @@ nav a:hover {
   z-index: 1001;
 }
 
-/* Mobile styles */
+/* ================= Carousel Styles ================= */
+
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.carousel-img {
+  position: absolute;
+  width: 100%;
+  height: 70%;
+  object-fit: cover;
+  object-position: center;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: 0;
+}
+
+.carousel-img.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+/* ================= Responsive ================= */
+
 @media (max-width: 768px) {
   .nav-toggle {
     display: block;
-    position: absolute;
-    top: 30px;
-    right: 20px;
   }
 
   .nav-menu {
-    flex-direction: column;
     position: absolute;
     top: 90px;
-    right: 0;
-    background-color: #001845;
+    left: 0;
     width: 100%;
+    flex-direction: column;
+    background-color: #001845;
     display: none;
     padding: 1rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    gap: 0;
   }
 
   .nav-menu.show {
@@ -169,22 +299,25 @@ nav a:hover {
   }
 
   .nav-menu a,
-  .nav-menu .dropdown {
-    margin: 10px 0;
+  .dropdown {
+    width: 100%;
+    padding: 0.75rem 1rem;
   }
 
   .dropdown-content {
     position: static;
-    background-color: transparent;
+    background-color: #001845;
     box-shadow: none;
+    border-radius: 0;
+    padding: 0;
   }
 
   .dropdown-content a {
-    padding-left: 1.5rem;
-    background-color: #001845;
+    border-top: 1px solid #334155;
   }
 
-  .dropdown:hover .dropdown-content {
-    display: block;
+  .logout-button {
+    margin-top: 1rem;
+    width: 100%;
   }
 }

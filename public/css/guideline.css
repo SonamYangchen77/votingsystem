@@ -75,7 +75,7 @@ nav a:hover {
     display: none;
     position: absolute;
     top: 35px;
-    background-color: #334155;
+    background-image: linear-gradient(to right, #0a1c44, #1a5ed4);
     padding: 0.5rem 0;
     min-width: 150px;
     border-radius: 4px;
@@ -252,4 +252,161 @@ footer a:hover {
       margin: 10px 0;
     }
   }
-  
+  /* === NAV LINK HOVER GLOW === */
+nav a::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background-color: #facc15;
+  transition: width 0.3s ease-in-out;
+}
+
+nav a:hover::after {
+  width: 100%;
+}
+
+/* === INTERACTIVE BUTTON STYLES === */
+.primary-btn,
+.secondary-btn {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-size: 200%;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.primary-btn {
+  background-image: linear-gradient(45deg, #1a5ed4, #003399);
+}
+
+.secondary-btn {
+  background-image: linear-gradient(45deg, #0a1c44, #1a5ed4);
+}
+
+.primary-btn:hover,
+.secondary-btn:hover {
+  background-position: right center;
+  transform: scale(1.05);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+}
+
+.primary-btn:active,
+.secondary-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* === INTERACTIVE CARDS === */
+.card {
+  background: white;
+  padding: 30px;
+  margin-bottom: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease;
+}
+
+.card:hover {
+  background-color: #eef4ff;
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* === GRID ITEM HOVER EFFECT === */
+.grid div {
+  transition: all 0.3s ease;
+  background-color: #f9fafb;
+  border-radius: 8px;
+}
+
+.grid div:hover {
+  background-color: #e0ecff;
+  transform: scale(1.03);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* === CAROUSEL INTERACTION === */
+.carousel-img {
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+}
+
+.carousel-img.active {
+  opacity: 1;
+  z-index: 1;
+  transform: scale(1.02);
+}
+
+
+
+/* === TEXT CONSISTENCY STYLES — SLIGHTLY SMALLER === */
+
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: inherit;
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+  text-align: left;
+}
+
+h1 {
+  font-size: 2.0rem;
+}
+h2 {
+  font-size: 1.8rem;
+}
+h3 {
+  font-size: 1.5rem;
+}
+h4 {
+  font-size: 1.3rem;
+}
+h5 {
+  font-size: 1.1rem;
+}
+h6 {
+  font-size: 1rem;
+}
+
+/* Paragraphs and lists */
+p, li {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #333;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+/* Navigation links */
+nav a,
+.dropdown-content a,
+footer a {
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+/* Buttons */
+.primary-btn,
+.secondary-btn {
+  font-size: 0.95rem;
+}
+
+/* Grid text alignment */
+.grid div {
+  text-align: center; /* Grid items usually look better centered */
+  font-size: 1rem;
+}
+
+/* Cards */
+.card {
+  text-align: left;
+}

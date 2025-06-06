@@ -5,49 +5,50 @@ const moment = require('moment');
 
 const getElections = async (req, res) => {
   try {
-    // Fetch all elections ordered by start_date descending
-    const electionResult = await pool.query('SELECT * FROM elections ORDER BY start_date DESC');
-    const elections = electionResult.rows;
+    // Get all elections ordered by start_date descending
+    const electionsResult = await pool.query('SELECT * FROM elections ORDER BY start_date DESC');
+    const elections = electionsResult.rows;
 
     const now = moment();
     const current = [], upcoming = [], past = [];
 
-    // Categorize elections
     for (const election of elections) {
       const start = moment(election.start_date);
       const end = moment(election.end_date);
 
       if (now.isBetween(start, end, null, '[]')) {
-        // Ongoing
-
-        // Fetch candidates linked directly to the election_id
-        const candidatesRes = await pool.query(
-          'SELECT * FROM candidates WHERE election_id = $1',
+        // Ongoing election - fetch candidates
+        const candidatesResult = await pool.query(
+          'SELECT id, name, candidate_image_url, course, position FROM candidates WHERE election_id = $1',
           [election.id]
         );
 
-        election.candidates = candidatesRes.rows;  // attach candidates directly to election
+        // Map candidate fields just in case
+        election.candidates = candidatesResult.rows.map(c => ({
+          id: c.id,
+          name: c.name,
+          candidate_image_url: c.candidate_image_url || '/images/default.jpg',
+          course: c.course || 'N/A',
+          position: c.position || 'N/A'
+        }));
+
         current.push(election);
 
       } else if (now.isBefore(start)) {
-        // Upcoming
         upcoming.push(election);
       } else {
-        // Past
         past.push(election);
       }
     }
 
-    // Render the election view with elections and their candidates
+    // Render view passing only ongoing elections (with candidates)
     res.render('election', {
       elections: current,
-      upcoming,
-      past,
-      query: req.query // Pass the query object to the template
+      query: req.query
     });
 
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching elections:', err);
     res.status(500).send('Server Error');
   }
 };
@@ -60,17 +61,28 @@ const getUpcomingElections = async (req, res) => {
       [today.format('YYYY-MM-DD')]
     );
 
-    const upcoming = result.rows.map(election => ({
-      ...election,
-      title: election.name,
-      date: moment(election.start_date).format('YYYY-MM-DD'),
-      startTime: moment(election.start_date).format('hh:mm A'),
-      endTime: moment(election.end_date).format('hh:mm A')
-    }));
+    // For each upcoming election, fetch candidates (optional, if you want to show candidates there)
+    const upcoming = [];
+
+    for (const election of result.rows) {
+      const candidatesRes = await pool.query(
+        'SELECT * FROM candidates WHERE election_id = $1',
+        [election.id]
+      );
+
+      upcoming.push({
+        ...election,
+        candidates: candidatesRes.rows,
+        startDateFormatted: moment(election.start_date).format('YYYY-MM-DD'),
+        startTime: moment(election.start_date).format('hh:mm A'),
+        endTime: moment(election.end_date).format('hh:mm A')
+      });
+    }
 
     res.render('upcoming', { upcoming });
+
   } catch (err) {
-    console.error(err);
+    console.error('Error in getUpcomingElections:', err);
     res.status(500).send('Server Error');
   }
 };
@@ -94,10 +106,11 @@ const getPastElections = async (req, res) => {
           [position.id]
         );
 
-        const totalVotes = candidatesRes.rows.reduce((sum, c) => sum + c.votes, 0);
+        const totalVotes = candidatesRes.rows.reduce((sum, c) => sum + (c.votes || 0), 0);
+
         const results = candidatesRes.rows.map(candidate => ({
           name: candidate.name,
-          votes: candidate.votes,
+          votes: candidate.votes || 0,
           percentage: totalVotes ? ((candidate.votes / totalVotes) * 100).toFixed(1) : 0
         }));
 
@@ -107,13 +120,13 @@ const getPastElections = async (req, res) => {
           results
         });
 
-        totalPositions += 1;
+        totalPositions++;
         totalParticipants += totalVotes;
       }
 
       pastElections.push({
         title: election.name,
-        date: new Date(election.end_date).toLocaleDateString(),
+        date: moment(election.end_date).format('MMMM Do, YYYY'),
         turnout: election.turnout || 0,
         totalVotes: election.total_votes || 0,
         positions
@@ -131,7 +144,7 @@ const getPastElections = async (req, res) => {
     res.render("past", { pastElections, statistics });
 
   } catch (err) {
-    console.error(err);
+    console.error('Error in getPastElections:', err);
     res.status(500).send("Error fetching past elections");
   }
 };

@@ -1,162 +1,302 @@
 /* Reset default styles */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  /* Body and base styling */
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f6f9;
-    color: #333;
-    line-height: 1.6;
-  }
-  
-  header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #001845;
-    color: white;
-    padding: 1rem 2rem;
-    display: flex;
-    height: 90px;
-    align-items: center;
-    z-index: 1000;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body and base styling */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f9;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header styles */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #001845;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  height: 90px;
+  align-items: center;
+  z-index: 1000;
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-right: auto; /* Pushes nav to the right */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto; /* Push nav to right */
 }
 
 .logo img {
-    max-height: 90px;
-    max-width: 150px;
-    object-fit: contain;
-    margin-left: -2rem; /* Cancels out header padding to touch screen edge */
+  max-height: 90px;
+  max-width: 150px;
+  object-fit: contain;
+  margin-left: -2rem; /* Cancel header padding to touch screen edge */
 }
 
 .logo span {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #facc15;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #facc15;
 }
-  
-  nav {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-  
-  nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    position: relative;
-  }
-  
-  nav a:hover {
-    color: #facc15;
-  }
-  
-  .dropdown {
-    position: relative;
-  }
-  
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    top: 35px;
-    background-color: #334155;
-    padding: 0.5rem 0;
-    min-width: 150px;
-    border-radius: 4px;
-    z-index: 1000;
-  }
-  
-  .dropdown-content a {
-    display: block;
-    color: white;
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-  }
-  
-  .dropdown-content a:hover {
-    background-color: #1e293b;
-  }
-  
-  .dropdown:hover .dropdown-content {
-    display: block;
-  }
-  
-  /* Carousel */
-  .carousel {
-    position: relative;
-    height: 400px;
-    overflow: hidden;
-  }
-  
-  .carousel-img {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;          /* Keeps aspect ratio and fills the container */
-    object-position: top -10px;       /* Aligns image to the top */
-    top: 0;
-    left: 0;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-  }
-  
-  .carousel-img.active {
-    opacity: 1;
-    z-index: 1;
-  }
-  
-.candidate-list ul {
-  list-style: none;
-  padding: 0;
+
+/* Navigation */
+nav {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 1.5rem;
 }
 
-.candidate-card {
-  border: 1px solid #ddd;
-  padding: 1rem;
-  width: 300px;
-  border-radius: 10px;
-  background: #fafafa;
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.3s ease;
 }
 
-.candidate-card img {
-  border-radius: 5px;
-  object-fit: cover;
+nav a:hover {
+  color: #facc15;
 }
 
-.profile-icon {
-  font-size: 1.5rem;
+/* Dropdown menus */
+.dropdown {
+  position: relative;
 }
 
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 35px;
+  background-image: linear-gradient(to right, #0a1c44, #1a5ed4);
+  padding: 0.5rem 0;
+  min-width: 150px;
+  border-radius: 4px;
+  z-index: 1000;
+}
+
+.dropdown-content a {
+  display: block;
+  color: white;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-content a:hover {
+  background-color: #1e293b;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Candidate List Container */
+.candidate-list {
+  max-width: 960px;
+  margin: 2rem auto 4rem;
+  padding: 0 1rem;
+}
+
+/* Title */
 .title {
+  font-size: 2rem;
   text-align: center;
-  margin: 2rem 0;
+  color: #222;
+  margin-bottom: 2rem;
 }
 
+/* Candidate Group Title */
+.candidate-group h4 {
+  font-size: 1.4rem;
+  color: #333;
+  border-bottom: 2px solid #333;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Candidate Card */
+.candidate-card {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  overflow: auto;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease;
+  width: 100%;
+  max-width: 600px;
+}
+
+.candidate-card:hover {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Candidate Image */
+.candidate-card img {
+  float: left;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  margin-right: 20px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* Candidate Info */
+.candidate-card h4 {
+  margin-top: 0;
+  color: #222;
+}
+
+.candidate-card p {
+  font-size: 0.95rem;
+  color: #555;
+  margin: 6px 0;
+}
+
+/* Details Button */
+.details-btn {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  transition: background-color 0.2s ease;
+  display: inline-block;
+}
+
+.details-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Candidate Details Section (Initially hidden) */
+.candidate-details {
+  margin-top: 15px;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+  clear: both;
+  font-size: 0.9rem;
+  color: #444;
+  display: none; /* Hidden by default */
+}
+
+/* Responsive: Adjust card for small screens */
+@media (max-width: 600px) {
+  .candidate-card img {
+    float: none;
+    display: block;
+    margin: 0 auto 15px;
+    width: 120px;
+    height: 120px;
+  }
+
+  .details-btn {
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  .candidate-card {
+    max-width: 100%;
+  }
+}
+
+/* Dropdown navigation select (if exists) */
+#electionSelect {
+  display: block;
+  margin: 2rem auto;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  max-width: 300px;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+#electionSelect:hover,
+#electionSelect:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+/* Toggle button for mobile navigation */
+.nav-toggle, #navToggle {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  display: none;
+  z-index: 1001;
+  position: absolute;
+  top: 30px;
+  right: 20px;
+}
+
+/* Show toggle button only on small screens */
+@media (max-width: 768px) {
+  .nav-toggle, #navToggle {
+    display: block;
+  }
+
+  nav {
+    display: none; /* Hide nav by default on mobile */
+  }
+
+  #navMenu, .nav-menu {
+    flex-direction: column;
+    position: absolute;
+    top: 90px;
+    right: 0;
+    background-color: #001845;
+    width: 100%;
+    padding: 1rem;
+    display: none;
+    z-index: 1000;
+  }
+
+  #navMenu.show, .nav-menu.show {
+    display: flex;
+  }
+
+  #navMenu a, .nav-menu a,
+  #navMenu .dropdown, .nav-menu .dropdown {
+    margin: 10px 0;
+    color: white;
+    text-decoration: none;
+  }
+
+  #navMenu a:hover, .nav-menu a:hover,
+  #navMenu .dropdown:hover, .nav-menu .dropdown:hover {
+    color: #facc15;
+  }
+}
+
+/* Selector panel */
 .selector-panel {
   text-align: center;
   background-color: #cbd5e1;
   padding: 1rem;
   border-radius: 8px;
-  margin: 0 auto;
+  margin: 0 auto 2rem;
   width: 90%;
+  max-width: 600px;
 }
 
+/* Dropdown group */
 .dropdown-group {
   display: flex;
   flex-wrap: wrap;
@@ -173,6 +313,8 @@
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 .option.active {
@@ -183,6 +325,7 @@
 .dropdown:hover {
   background-color: #3b82f6;
 }
+
 .dropdown-group select {
   padding: 0.5rem 1rem;
   border-radius: 5px;
@@ -190,13 +333,16 @@
   margin: 0.5rem;
   font-size: 1rem;
   background-color: #577cc3;
+  color: white;
 }
 
+/* Info note */
 .info-note {
   display: flex;
   justify-content: space-around;
-  padding: 2rem;
+  padding: 2rem 1rem;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .note-left,
@@ -217,72 +363,7 @@
   border-radius: 4px;
 }
 
-  
-  /* Footer */
-  footer {
-    background-color: #001845;
-    color: white;
-    padding: 2rem 1rem;
-    text-align: center;
-    margin-top: 2rem;
-  }
-  
-  .footer-links,
-  .socials {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-  
-  footer a {
-    color: #facc15;
-    text-decoration: none;
-  }
-  
-  footer a:hover {
-    text-decoration: underline;
-  }
-  
-
-  /* Toggle button for mobile */
-.nav-toggle {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 2rem;
-  cursor: pointer;
-  display: none;
-  z-index: 1001;
-}
-
-/* Show toggle button only on small screens */
-@media (max-width: 768px) {
-  .nav-toggle {
-    display: block;
-    position: absolute;
-    top: 30px;
-    right: 20px;
-  }
-
-  .nav-menu {
-    flex-direction: column;
-    position: absolute;
-    top: 90px;
-    right: 0;
-    background-color: #001845;
-    width: 100%;
-    display: none;
-    padding: 1rem;
-  }
-
-  .nav-menu.show {
-    display: flex;
-  }
-
-  .nav-menu a,
-  .nav-menu .dropdown {
-    margin: 10px 0;
-  }
+/* Profile icon */
+.profile-icon {
+  font-size: 1.5rem;
 }
