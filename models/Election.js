@@ -1,3 +1,4 @@
+// models/Election.js
 const pool = require('../config/db');
 
 const Election = {
@@ -26,32 +27,7 @@ const Election = {
     } finally {
       client.release();
     }
-  },
-
-  async getAll() {
-    const client = await pool.connect();
-    try {
-      const res = await client.query('SELECT * FROM elections ORDER BY start_date ASC');
-      return res.rows;  // array of election objects
-    } catch (err) {
-      console.error('Error fetching elections:', err);
-      throw err;
-    } finally {
-      client.release();
-    }
   }
 };
-Election.getUpcoming = async function () {
-  const client = await pool.connect();
-  try {
-    const res = await client.query(`
-      SELECT * FROM elections WHERE start_date > NOW() ORDER BY start_date ASC
-    `);
-    return res.rows;
-  } finally {
-    client.release();
-  }
-};
-
 
 module.exports = Election;

@@ -66,7 +66,7 @@
     election.candidates.forEach(candidate => {
       html += `
         <div class="candidate">
-          <img src="${candidate.imageUrl || '/images/default.png'}" alt="${candidate.name}">
+          <img src="${candidate.imageUrl ? '/uploads/' + candidate.imageUrl : '/images/default.png'}" alt="${candidate.name}">
           <div>
             <strong>${candidate.name}</strong><br>
             <small>${candidate.party || ''}</small>

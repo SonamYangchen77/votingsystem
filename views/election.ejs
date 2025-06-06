@@ -1,5 +1,4 @@
 <%- include('partials/header') %>
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="/css/election.css">
 
@@ -35,47 +34,30 @@
                 <div class="candidates">
                   <% election.candidates.forEach(candidate=> { %>
                     <div class="candidate-block">
-                      <img src="<%= candidate.candidate_image_url || '/images/default.jpg' %>"
-                        alt="<%= candidate.name %>" />
+                      <img src="<%= candidate.candidate_image_url || '/assets/default.jpg' %>"
+                        alt="<%= candidate.full_name %>" />
                       <div>
                         <strong>
-                          <%= candidate.name %>
+                          <%= candidate.full_name %>
                         </strong><br>
                         <small>
                           <%= candidate.course || 'N/A' %>
                         </small><br>
                         <small>Position: <%= candidate.position || 'N/A' %></small>
                       </div>
+
                       <form action="/vote/<%= election.id %>/<%= candidate.id %>" method="POST">
 
-                        <button class="vote-btn" type="button" data-candidate-name="<%= candidate.name %>"
+                        <button class="vote-btn" type="button" data-candidate-name="<%= candidate.full_name %>"
                           data-candidate-course="<%= candidate.course %>"
                           data-candidate-position="<%= candidate.position %>">
                           Vote
                         </button>
+
                       </form>
                     </div>
                     <% }) %>
                 </div>
-                <div class="candidate-block">
-                  <img src="<%= candidate.candidate_image_url || '/images/default.jpg' %>" alt="<%= candidate.name %>"
-                    width="80" />
-                  <div>
-                    <strong>
-                      <%= candidate.name %>
-                    </strong><br>
-                    <small>Course: <%= candidate.course || 'N/A' %></small><br>
-                    <small>Position: <%= candidate.position || 'N/A' %></small>
-                  </div>
-                  <form action="/vote/<%= election.id %>/<%= candidate.id %>" method="POST">
-                    <button class="vote-btn" type="button" data-candidate-name="<%= candidate.name %>"
-                      data-candidate-course="<%= candidate.course %>"
-                      data-candidate-position="<%= candidate.position %>">
-                      Vote
-                    </button>
-                  </form>
-                </div>
-
                 <% } else { %>
                   <p>No candidates for this election.</p>
                   <% } %>
@@ -105,25 +87,6 @@
   <%- include('partials/footer') %>
 
     <script>
-      const slides = document.querySelectorAll('.carousel-img');
-      let current = 0;
-
-      function showSlide(index) {
-        slides.forEach((slide, i) => {
-          slide.classList.remove('active');
-          if (i === index) slide.classList.add('active');
-        });
-      }
-
-      function nextSlide() {
-        current = (current + 1) % slides.length;
-        showSlide(current);
-      }
-
-      showSlide(current); // Show first slide initially
-      setInterval(nextSlide, 5000); // Change slide every 5 seconds
-
-
       // Navigation toggle
       const navToggle = document.getElementById('navToggle');
       const navMenu = document.getElementById('navMenu');
@@ -188,5 +151,4 @@
       });
     </script>
     </body>
-
     </html>

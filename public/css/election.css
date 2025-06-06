@@ -1,189 +1,350 @@
-/* Reset default styles */
+/* === RESET === */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Base styling */
+/* === BASE === */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f4f6f9;
-  color: #1e293b;
+  color: #333;
   line-height: 1.6;
 }
 
+/* === HEADER === */
 
-/* Election Section */
-.elections-container {
-  padding: 2rem 1rem;
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;
+}
+
+.logo img {
+  max-height: 90px;
+  max-width: 150px;
+  object-fit: contain;
+  margin-left: -2rem;
+}
+
+.logo span {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #facc15;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+}
+
+nav a:hover {
+  color: #facc15;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 35px;
+  background-image: linear-gradient(to right, #0a1c44, #1a5ed4);
+  padding: 0.5rem 0;
+  min-width: 150px;
+  border-radius: 4px;
+  z-index: 1000;
+}
+
+.dropdown-content a {
+  display: block;
+  color: white;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+}
+
+.dropdown-content a:hover {
+  background-color: #1e293b;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* === OVERVIEW + BUTTONS === */
+.election-overview {
   text-align: center;
-  margin-top: 120px;
+  padding: 2rem 1rem;
+  background-color: #e2e8f0;
+}
+
+.election-overview h2 {
+  font-size: 1.8rem;
+  color: #001845;
 }
 
 .button-group {
+  margin-top: 15px;
+  margin-bottom: 30px;
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 2rem;
-  margin: 1.5rem 0 2rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
 }
 
 .button-group .btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1.2rem;
   border: none;
-  background-image: linear-gradient(to right, #1a5ed4, #0a1c44);
+  background-image: linear-gradient(to right, #0a1c44, #1a5ed4);
   color: #1e293b;
   border-radius: 6px;
-  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s ease background-color;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.button-group .btn:hover,
+.button-group .btn:hover {
+  background-color: #1e3a8a;
+  color: white;
+  transform: translateY(-2px);
+}
+
 .button-group .btn.active {
   background-color: #1e3a8a;
   color: white;
 }
 
-.election-card {
-  background-color: #c4e1f8;
+/* === ARCHIVES === */
+.archives {
+  background-color: #f8fafc;
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto 3rem;
+}
+
+.archives h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #111;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 0.5rem;
+}
+
+/* === ELECTION BOX === */
+.election-box {
+  background-color: white;
   padding: 1.5rem;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  margin-bottom: 2rem;
-  text-align: left;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
 }
 
-.election-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
+.election-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-.position-desc {
-  margin: 0.5rem 0 1.2rem;
+.election-box h4 {
+  color: #1e3a8a;
+  margin-bottom: 0.5rem;
+}
+
+.election-box p {
+  margin-bottom: 0.6rem;
+  line-height: 1.4;
   font-size: 0.95rem;
-  color: #555;
+  color: #444;
 }
 
-/* Enlarged Candidate Card */
-.candidate {
-  background-image: linear-gradient(to right, #0a1c44, #1a5ed4);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 2rem;
-  width: 100%;
-  max-width: 340px;
+/* === CANDIDATES CONTAINER === */
+.candidates {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+/* === CANDIDATE BLOCK === */
+.candidate-block {
+  background-color: #f1f5f9;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 180px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  position: relative;
 }
 
-.candidate:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+.candidate-block:hover {
+  background-color: #e0e7ff;
 }
 
-.candidate img {
-  width: 140px;
-  height: 140px;
+.candidate-block img {
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   border-radius: 50%;
-  margin-bottom: 1rem;
-  border: 4px solid linear-gradient(to right, #0a1c44, #1a5ed4);;
+  margin-bottom: 0.6rem;
+  border: 2px solid #007bff;
 }
 
-.candidate h3 {
-  margin: 0.5rem 0 0.3rem;
-  font-size: 1.3rem;
-  color: #1e293b;
+.candidate-block strong {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.2rem;
+  color: #222;
 }
 
-.candidate p {
-  font-size: 1rem;
-  color: #64748b;
-  text-align: center;
-  margin-bottom: 1rem;
+.candidate-block small {
+  font-size: 0.85rem;
+  color: #666;
+  display: block;
+  margin-bottom: 0.15rem;
 }
 
+/* === VOTE BUTTON === */
 .vote-btn {
+  margin-top: auto;
+  padding: 0.4rem 0.8rem;
+  border: none;
   background-image: linear-gradient(to right, #0a1c44, #1a5ed4);
   color: white;
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 6px;
   font-weight: 600;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s;
+  width: 100%;
 }
 
 .vote-btn:hover {
-  background-color: #003b99;
+  background-color: #0056b3;
 }
 
-/* Modal */
+/* === SUCCESS MESSAGE === */
+.success-msg {
+  text-align: center;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  padding: 0.7rem 1rem;
+  margin: 1rem auto;
+  border-radius: 4px;
+  font-weight: 600;
+  max-width: 400px;
+}
+
+/* === MODAL STYLES === */
 .modal {
-  display: none;
   position: fixed;
-  z-index: 9999;
-  left: 0;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  display: none;
 }
 
 .modal-content {
   background-color: #fff;
-  margin: 10% auto;
+  border-radius: 6px;
   padding: 2rem;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 450px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-/* Footer */
-footer {
-  background-color: #001845;
-  color: white;
-  padding: 2rem 1rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  position: relative;
   text-align: center;
-  margin-top: 3rem;
 }
 
-.footer-links,
-.socials {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+.modal-content h2 {
   margin-bottom: 1rem;
+  color: #007bff;
 }
 
-footer a {
-  color: #facc15;
-  text-decoration: none;
+.modal-content p {
+  white-space: pre-line; /* Preserve line breaks */
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: #333;
 }
 
-footer a:hover {
-  text-decoration: underline;
+.modal-content form {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
-/* Mobile Navigation */
-.nav-toggle {
-  background: none;
+.modal-content button[type="submit"] {
+  flex-grow: 1;
+  padding: 0.5rem;
+  background-color: #007bff;
   border: none;
   color: white;
-  font-size: 2rem;
+  border-radius: 4px;
+  font-weight: 600;
   cursor: pointer;
-  display: none;
-  z-index: 1001;
+  transition: background-color 0.3s;
 }
 
+.modal-content button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+.modal-content #cancelButton {
+  flex-grow: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: #555;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.modal-content #cancelButton:hover {
+  background-color: #eee;
+}
+
+/* === CLOSE BUTTON === */
+.close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.8rem;
+  font-size: 1.5rem;
+  color: #777;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close:hover {
+  color: #000;
+}
+
+/* === RESPONSIVE === */
 @media (max-width: 768px) {
   .nav-toggle {
     display: block;
@@ -207,9 +368,9 @@ footer a:hover {
     display: flex;
   }
 
-  .election-header {
-    flex-direction: column;
-    align-items: flex-start;
+  .nav-menu a,
+  .nav-menu .dropdown {
+    margin: 10px 0;
   }
 
   .button-group {
@@ -218,82 +379,18 @@ footer a:hover {
   }
 
   .candidates {
-    flex-direction: column;
-    align-items: center;
+    justify-content: center;
   }
-}
 
-/* Enlarged Horizontal Card */
-.election-box {
-  background-color: #f5f7fa;
-  padding: 1.5rem 2rem;
-  margin-bottom: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-}
+  .candidate-block {
+    width: 140px;
+  }
 
-.election-box h4 {
-  color: #001845;
-  margin-bottom: 0.5rem;
-}
+  .archives {
+    padding: 1rem;
+  }
 
-.election-box p {
-  color: #444;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-}
-
-.candidates {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  justify-content: center;
-}
-
-.candidate-block {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 1.5rem 2rem;
-  width: 450px;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.candidate-block:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-.candidate-block img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 4px solid #0b50d2;
-  flex-shrink: 0;
-}
-
-.candidate-block div {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.candidate-block strong {
-  font-size: 1.2rem;
-  margin-bottom: 0.2rem;
-}
-
-.candidate-block small {
-  color: #64748b;
-  font-size: 0.95rem;
-  margin-bottom: 0.2rem;
-}
-
-.vote-btn {
-  align-self: flex-start;
+  .election-box {
+    padding: 1rem;
+  }
 }
