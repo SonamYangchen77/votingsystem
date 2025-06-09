@@ -58,7 +58,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// DB Table Creation + Safe Alter Table for full_name
+// DB Table Creation + Safe Alter Table for full_name and candidate_image_url
 (async () => {
   try {
     await User.createTable();
@@ -66,18 +66,25 @@ app.use((req, res, next) => {
     await Election.createTable();
     await Vote.createTables();
 
-    // ✅ Ensure full_name column exists (for old production DBs)
-    const result = await db.query(`
-      SELECT column_name 
-      FROM information_schema.columns 
-      WHERE table_name='candidates' AND column_name='full_name';
-    `);
+    // ✅ Ensure required columns exist in candidates table
+    const requiredColumns = [
+      { name: 'full_name', definition: `VARCHAR(100) NOT NULL DEFAULT ''` },
+      { name: 'candidate_image_url', definition: `VARCHAR(255)` }
+    ];
 
-    if (result.rowCount === 0) {
-      await db.query(`ALTER TABLE candidates ADD COLUMN full_name VARCHAR(100) NOT NULL DEFAULT '';`);
-      console.log('✅ full_name column added to candidates table.');
-    } else {
-      console.log('✅ full_name column already exists.');
+    for (const col of requiredColumns) {
+      const check = await db.query(`
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_name='candidates' AND column_name=$1
+      `, [col.name]);
+
+      if (check.rowCount === 0) {
+        await db.query(`ALTER TABLE candidates ADD COLUMN ${col.name} ${col.definition}`);
+        console.log(`✅ Added missing column '${col.name}' to candidates table.`);
+      } else {
+        console.log(`✅ Column '${col.name}' already exists.`);
+      }
     }
 
     console.log('✅ All required DB tables and columns are ready.');
