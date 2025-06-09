@@ -69,7 +69,8 @@ app.use((req, res, next) => {
     // ✅ Ensure required columns exist in candidates table
     const requiredColumns = [
       { name: 'full_name', definition: `VARCHAR(100) NOT NULL DEFAULT ''` },
-      { name: 'candidate_image_url', definition: `VARCHAR(255)` }
+      { name: 'candidate_image_url', definition: `VARCHAR(255)` },
+      { name: 'course', definition: `VARCHAR(100)` }
     ];
 
     for (const col of requiredColumns) {
