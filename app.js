@@ -18,7 +18,6 @@ const User = require('./models/User');
 const Vote = require('./models/voteModel');
 const Candidate = require('./models/Candidate');
 
-
 dotenv.config();
 
 // Ensure required folders exist
@@ -59,15 +58,29 @@ app.use((req, res, next) => {
   next();
 });
 
-// DB Table Creation + Route Registration
+// DB Table Creation + Safe Alter Table for full_name
 (async () => {
   try {
     await User.createTable();
-     await Candidate.createTable();
+    await Candidate.createTable();
     await Election.createTable();
     await Vote.createTables();
 
-    console.log('✅ All required DB tables created.');
+    // ✅ Ensure full_name column exists (for old production DBs)
+    const result = await db.query(`
+      SELECT column_name 
+      FROM information_schema.columns 
+      WHERE table_name='candidates' AND column_name='full_name';
+    `);
+
+    if (result.rowCount === 0) {
+      await db.query(`ALTER TABLE candidates ADD COLUMN full_name VARCHAR(100) NOT NULL DEFAULT '';`);
+      console.log('✅ full_name column added to candidates table.');
+    } else {
+      console.log('✅ full_name column already exists.');
+    }
+
+    console.log('✅ All required DB tables and columns are ready.');
 
     // Load routes after DB is ready
     const authRoutes = require('./routes/authRoutes');
