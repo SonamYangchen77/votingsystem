@@ -5,6 +5,7 @@ const Candidate = {
   async createTable() {
     const client = await pool.connect();
     try {
+      // Ensure the table exists
       await client.query(`
         CREATE TABLE IF NOT EXISTS candidates (
           id SERIAL PRIMARY KEY,
@@ -12,7 +13,6 @@ const Candidate = {
           election_name VARCHAR(100) NOT NULL,
           position VARCHAR(50) NOT NULL,
           course VARCHAR(100) NOT NULL,
-          year VARCHAR(20) NOT NULL,
           candidate_image_url VARCHAR(255),
           leadership_experience TEXT,
           manifesto TEXT,
@@ -22,15 +22,29 @@ const Candidate = {
           election_id INTEGER REFERENCES elections(id)
         );
       `);
-      console.log('Candidates table created or already exists.');
+
+      // Safely add the missing 'year' column if it doesn't exist
+      await client.query(`
+        DO $$
+        BEGIN
+          IF NOT EXISTS (
+            SELECT 1
+            FROM information_schema.columns 
+            WHERE table_name='candidates' AND column_name='year'
+          ) THEN
+            ALTER TABLE candidates ADD COLUMN year VARCHAR(20);
+          END IF;
+        END
+        $$;
+      `);
+
+      console.log('✅ Candidates table ensured with `year` column.');
     } catch (err) {
-      console.error('Error creating candidates table:', err);
+      console.error('❌ Error ensuring candidates table:', err);
     } finally {
       client.release();
     }
-  }
-};
-
+  },
 Candidate.getByElectionId = async function (electionId) {
   const client = await pool.connect();
   try {
