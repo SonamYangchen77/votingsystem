@@ -17,7 +17,7 @@ const Election = require('./models/Election');
 const User = require('./models/User');
 const Vote = require('./models/voteModel');
 const Candidate = require('./models/Candidate');
-
+const Position = require('./models/positions');
 dotenv.config();
 
 // Ensure required folders exist
