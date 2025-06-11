@@ -1,7 +1,7 @@
 const pool = require('../config/db');
 
 const Candidate = {
-  // Create candidates table and ensure 'election_name', 'year' and 'manifesto' columns exist
+  // Create candidates table and ensure necessary columns exist
   async createTable() {
     const client = await pool.connect();
     try {
@@ -22,7 +22,7 @@ const Candidate = {
         );
       `);
 
-      // Ensure additional columns exist including election_name
+      // Ensure additional columns exist and remove outdated ones
       await client.query(`
         DO $$
         BEGIN
@@ -46,11 +46,18 @@ const Candidate = {
           ) THEN
             ALTER TABLE candidates ADD COLUMN manifesto TEXT;
           END IF;
+
+          IF EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_name = 'candidates' AND column_name = 'name'
+          ) THEN
+            ALTER TABLE candidates DROP COLUMN name;
+          END IF;
         END
         $$;
       `);
 
-      console.log('✅ Candidates table ensured with `election_name`, `year`, and `manifesto` columns.');
+      console.log('✅ Candidates table ensured with `election_name`, `year`, `manifesto`, and removed legacy `name` column if present.');
     } catch (err) {
       console.error('❌ Error ensuring candidates table:', err);
     } finally {
