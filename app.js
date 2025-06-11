@@ -65,6 +65,7 @@ app.use((req, res, next) => {
     await Candidate.createTable();
     await Election.createTable();
     await Vote.createTables();
+    await Position.createTable();
 
     // ✅ Ensure required columns exist in candidates table
     const requiredColumns = [
