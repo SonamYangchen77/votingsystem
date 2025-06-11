@@ -10,12 +10,12 @@ const getElections = async (req, res) => {
 
     console.log("Fetched elections:", elections);
 
-    const now = moment();
+    const now = moment().startOf('day');  // Normalize to start of today
     const current = [], upcoming = [], past = [];
 
     for (const election of elections) {
-      const start = moment(election.start_date);
-      const end = moment(election.end_date);
+      const start = moment(election.start_date).startOf('day'); // Start of start day
+      const end = moment(election.end_date).endOf('day');       // End of end day
 
       if (now.isBetween(start, end, null, '[]')) {
         const candidatesRes = await pool.query(
@@ -24,7 +24,7 @@ const getElections = async (req, res) => {
         );
         election.candidates = candidatesRes.rows;
 
-        console.log(Election "${election.name}" candidates:, election.candidates);
+        console.log(`Election "${election.name}" candidates:`, election.candidates);
 
         current.push(election);
       } else if (now.isBefore(start)) {
@@ -85,15 +85,15 @@ const getPastElections = async (req, res) => {
 
       for (const position of positionsRes.rows) {
         const candidatesRes = await pool.query(
-          'SELECT c.id, c.name, c.votes FROM candidates c WHERE c.position_id = $1 ORDER BY votes DESC',
-          [position.id]
+          'SELECT c.id, c.full_name as name, c.votes_count as votes FROM candidates c WHERE c.position = $1 ORDER BY votes_count DESC',
+          [position.name]
         );
 
-        const totalVotes = candidatesRes.rows.reduce((sum, c) => sum + c.votes, 0);
+        const totalVotes = candidatesRes.rows.reduce((sum, c) => sum + (c.votes || 0), 0);
         const results = candidatesRes.rows.map(candidate => ({
           name: candidate.name,
           votes: candidate.votes,
-          percentage: totalVotes ? ((candidate.votes / totalVotes) * 100).toFixed(1) : 0
+          percentage: totalVotes ? ((candidate.votes / totalVotes) * 100).toFixed(1) : '0.0'
         }));
 
         positions.push({
@@ -118,7 +118,7 @@ const getPastElections = async (req, res) => {
     }
 
     const statistics = {
-      avgTurnout: pastElections.length ? (totalTurnout / pastElections.length).toFixed(2) : 0,
+      avgTurnout: pastElections.length ? (totalTurnout / pastElections.length).toFixed(2) : '0.00',
       totalParticipants,
       totalPositions
     };
