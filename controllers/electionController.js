@@ -1,19 +1,20 @@
 const pool = require('../config/db');
-const moment = require('moment');
-
-// ---------------- USER VIEWS ----------------
+const moment = require('moment-timezone');
 
 const getElections = async (req, res) => {
   try {
     const electionResult = await pool.query('SELECT * FROM elections ORDER BY start_date DESC');
     const elections = electionResult.rows;
 
-    const now = moment.utc(); // Fix: use UTC
+    // Use Bhutan time explicitly:
+    const now = moment.tz('Asia/Thimphu');
+
     const current = [], upcoming = [], past = [];
 
     for (const election of elections) {
-      const start = moment.utc(election.start_date); // Fix: use UTC
-      const end = moment.utc(election.end_date);     // Fix: use UTC
+      // Parse dates from DB (assumed UTC) and convert to Bhutan time
+      const start = moment.utc(election.start_date).tz('Asia/Thimphu');
+      const end = moment.utc(election.end_date).tz('Asia/Thimphu');
 
       if (now.isBetween(start, end, null, '[]')) {
         const candidatesRes = await pool.query(
@@ -21,7 +22,6 @@ const getElections = async (req, res) => {
           [election.id]
         );
         election.candidates = candidatesRes.rows;
-
         current.push(election);
       } else if (now.isBefore(start)) {
         upcoming.push(election);
@@ -42,6 +42,7 @@ const getElections = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+
 
 
 const getUpcomingElections = async (req, res) => {
