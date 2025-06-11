@@ -10,14 +10,12 @@ const getElections = async (req, res) => {
 
     console.log("Fetched elections:", elections);
 
-    const now = moment().startOf('day');  // Normalize to start of today
+    const now = moment();
     const current = [], upcoming = [], past = [];
 
     for (const election of elections) {
-      const start = moment(election.start_date).startOf('day'); // Start of start day
-      const end = moment(election.end_date).endOf('day');       // End of end day
-
-      console.log(`Election "${election.name}": start=${start.format()}, end=${end.format()}, now=${now.format()}`);
+      const start = moment(election.start_date);
+      const end = moment(election.end_date);
 
       if (now.isBetween(start, end, null, '[]')) {
         const candidatesRes = await pool.query(
@@ -26,7 +24,7 @@ const getElections = async (req, res) => {
         );
         election.candidates = candidatesRes.rows;
 
-        console.log(`Election "${election.name}" candidates:`, election.candidates);
+        console.log(Election "${election.name}" candidates:, election.candidates);
 
         current.push(election);
       } else if (now.isBefore(start)) {
@@ -48,6 +46,7 @@ const getElections = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+
 const getUpcomingElections = async (req, res) => {
   try {
     const today = moment().startOf('day');
