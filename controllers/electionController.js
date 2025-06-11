@@ -8,14 +8,12 @@ const getElections = async (req, res) => {
     const electionResult = await pool.query('SELECT * FROM elections ORDER BY start_date DESC');
     const elections = electionResult.rows;
 
-    console.log("Fetched elections:", elections);
-
-    const now = moment();
+    const now = moment.utc(); // Fix: use UTC
     const current = [], upcoming = [], past = [];
 
     for (const election of elections) {
-      const start = moment(election.start_date);
-      const end = moment(election.end_date);
+      const start = moment.utc(election.start_date); // Fix: use UTC
+      const end = moment.utc(election.end_date);     // Fix: use UTC
 
       if (now.isBetween(start, end, null, '[]')) {
         const candidatesRes = await pool.query(
@@ -23,8 +21,6 @@ const getElections = async (req, res) => {
           [election.id]
         );
         election.candidates = candidatesRes.rows;
-
-        console.log(`Election "${election.name}" candidates:`, election.candidates);
 
         current.push(election);
       } else if (now.isBefore(start)) {
