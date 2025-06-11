@@ -2,48 +2,55 @@ const pool = require('../config/db');
 
 const Candidate = {
   // Create candidates table and ensure 'year' column exists
-  async createTable() {
-    const client = await pool.connect();
-    try {
-      // Create table if it doesn't exist
-      await client.query(`
-        CREATE TABLE IF NOT EXISTS candidates (
-          id SERIAL PRIMARY KEY,
-          full_name VARCHAR(100) NOT NULL,
-          election_name VARCHAR(100) NOT NULL,
-          position VARCHAR(50) NOT NULL,
-          course VARCHAR(100) NOT NULL,
-          candidate_image_url VARCHAR(255),
-          leadership_experience TEXT,
-          manifesto TEXT,
-          votes_count INTEGER DEFAULT 0,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          election_id INTEGER REFERENCES elections(id)
-        );
-      `);
+async createTable() {
+  const client = await pool.connect();
+  try {
+    // Create table if it doesn't exist
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS candidates (
+        id SERIAL PRIMARY KEY,
+        full_name VARCHAR(100) NOT NULL,
+        election_name VARCHAR(100) NOT NULL,
+        position VARCHAR(50) NOT NULL,
+        course VARCHAR(100) NOT NULL,
+        candidate_image_url VARCHAR(255),
+        leadership_experience TEXT,
+        votes_count INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        election_id INTEGER REFERENCES elections(id)
+      );
+    `);
 
-      // Add 'year' column if not exists
-      await client.query(`
-        DO $$
-        BEGIN
-          IF NOT EXISTS (
-            SELECT 1 FROM information_schema.columns
-            WHERE table_name='candidates' AND column_name='year'
-          ) THEN
-            ALTER TABLE candidates ADD COLUMN year VARCHAR(20);
-          END IF;
-        END
-        $$;
-      `);
+    // Ensure year and manifesto columns exist
+    await client.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.columns
+          WHERE table_name = 'candidates' AND column_name = 'year'
+        ) THEN
+          ALTER TABLE candidates ADD COLUMN year VARCHAR(20);
+        END IF;
 
-      console.log('✅ Candidates table ensured with `year` column.');
-    } catch (err) {
-      console.error('❌ Error ensuring candidates table:', err);
-    } finally {
-      client.release();
-    }
-  },
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.columns
+          WHERE table_name = 'candidates' AND column_name = 'manifesto'
+        ) THEN
+          ALTER TABLE candidates ADD COLUMN manifesto TEXT;
+        END IF;
+      END
+      $$;
+    `);
+
+    console.log('✅ Candidates table ensured with `year` and `manifesto` columns.');
+  } catch (err) {
+    console.error('❌ Error ensuring candidates table:', err);
+  } finally {
+    client.release();
+  }
+}
+
 
   // Get candidates by election ID
   async getByElectionId(electionId) {
