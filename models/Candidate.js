@@ -1,11 +1,11 @@
-// models/Candidate.js
 const pool = require('../config/db');
 
 const Candidate = {
+  // Create candidates table and ensure 'year' column exists
   async createTable() {
     const client = await pool.connect();
     try {
-      // Ensure the table exists
+      // Create table if it doesn't exist
       await client.query(`
         CREATE TABLE IF NOT EXISTS candidates (
           id SERIAL PRIMARY KEY,
@@ -23,13 +23,12 @@ const Candidate = {
         );
       `);
 
-      // Safely add the missing 'year' column if it doesn't exist
+      // Add 'year' column if not exists
       await client.query(`
         DO $$
         BEGIN
           IF NOT EXISTS (
-            SELECT 1
-            FROM information_schema.columns 
+            SELECT 1 FROM information_schema.columns
             WHERE table_name='candidates' AND column_name='year'
           ) THEN
             ALTER TABLE candidates ADD COLUMN year VARCHAR(20);
@@ -45,46 +44,39 @@ const Candidate = {
       client.release();
     }
   },
-Candidate.getByElectionId = async function (electionId) {
-  const client = await pool.connect();
-  try {
-    const res = await client.query(
-      'SELECT * FROM candidates WHERE election_id = $1',
-      [electionId]
-    );
-    return res.rows;
-  } catch (err) {
-    console.error('Error fetching candidates:', err);
-    throw err;
-  } finally {
-    client.release();
+
+  // Get candidates by election ID
+  async getByElectionId(electionId) {
+    const client = await pool.connect();
+    try {
+      const res = await client.query(
+        'SELECT * FROM candidates WHERE election_id = $1',
+        [electionId]
+      );
+      return res.rows;
+    } catch (err) {
+      console.error('❌ Error fetching candidates by election:', err);
+      throw err;
+    } finally {
+      client.release();
+    }
+  },
+
+  // Get most recent candidates
+  async getRecent() {
+    const client = await pool.connect();
+    try {
+      const res = await client.query(`
+        SELECT * FROM candidates ORDER BY created_at DESC LIMIT 10
+      `);
+      return res.rows;
+    } catch (err) {
+      console.error('❌ Error fetching recent candidates:', err);
+      throw err;
+    } finally {
+      client.release();
+    }
   }
 };
-
-Candidate.getRecent = async function () {
-  const client = await pool.connect();
-  try {
-    const res = await client.query(`
-      SELECT * FROM candidates ORDER BY created_at DESC LIMIT 10
-    `);
-    return res.rows;
-  } finally {
-    client.release();
-  }
-};
-
-Candidate.getByElectionId = async function (electionId) {
-  const client = await pool.connect();
-  try {
-    const res = await client.query(
-      'SELECT * FROM candidates WHERE election_id = $1',
-      [electionId]
-    );
-    return res.rows;
-  } finally {
-    client.release();
-  }
-};
-
 
 module.exports = Candidate;
