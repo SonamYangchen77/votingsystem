@@ -24,5 +24,6 @@ router.get('/adminElection/editElection/:id', isAdmin, adminElectionController.r
 router.post('/adminElection/editElection/:id', isAdmin, adminElectionController.updateElection);
 
 router.post('/adminElection/:id/delete', isAdmin, adminElectionController.deleteElection);
+router.delete('/adminElection/:id', adminElectionController.deleteElection);
 
 module.exports = router;
