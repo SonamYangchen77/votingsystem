@@ -14,18 +14,15 @@ const storage = multer.diskStorage({
     cb(null, `${Date.now()}-${file.originalname}`);
   }
 });
-
 const upload = multer({ storage });
 
-// Admin Election Routes
+// Routes for /admin/*
 router.get('/adminElection', isAdmin, adminElectionController.listElections);
-
 router.post('/adminElection/create', isAdmin, upload.single('voterFile'), adminElectionController.createElection);
-router.get('/adminElection/edit/:id', isAdmin, adminElectionController.renderEditElection);
-router.post('/adminElection/edit/:id', isAdmin, adminElectionController.updateElection);
-// In routes/adminElectionRoutes.js
-router.post('/adminElection/:id/delete', isAdmin,adminElectionController.deleteElection);
 
+router.get('/adminElection/editElection/:id', isAdmin, adminElectionController.renderEditElection);
+router.post('/adminElection/editElection/:id', isAdmin, adminElectionController.updateElection);
 
+router.post('/adminElection/:id/delete', isAdmin, adminElectionController.deleteElection);
 
 module.exports = router;
