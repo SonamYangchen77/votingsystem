@@ -20,7 +20,6 @@ exports.createElection = async (req, res) => {
   const file = req.file?.filename;
 
   try {
-    // 1. Create the election
     const result = await pool.query(
       `INSERT INTO elections (name, description, start_date, end_date)
        VALUES ($1, $2, $3, $4) RETURNING id`,
@@ -29,7 +28,6 @@ exports.createElection = async (req, res) => {
 
     const electionId = result.rows[0].id;
 
-    // 2. If file uploaded, process eligible voters
     if (file) {
       const filePath = path.join(__dirname, '..', 'uploads', file);
       const eligibleVoters = [];
@@ -37,7 +35,7 @@ exports.createElection = async (req, res) => {
       fs.createReadStream(filePath)
         .pipe(csv())
         .on('data', async (row) => {
-          const studentId = row.student_id?.trim(); // Adjust header as needed
+          const studentId = row.student_id?.trim();
           if (!studentId) return;
 
           try {
