@@ -112,17 +112,18 @@ const updateElection = async (req, res) => {
   }
 };
 
-// Delete election
 const deleteElection = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Delete dependent data first
+    // Delete dependent records (if they exist)
     await pool.query('DELETE FROM candidates WHERE election_id = $1', [id]);
     await pool.query('DELETE FROM positions WHERE election_id = $1', [id]);
-    await pool.query('DELETE FROM eligible_voters WHERE election_id = $1', [id]);
 
-    // Delete the election itself
+    // ❌ No need to delete from eligible_voters since it doesn't exist
+    // await pool.query('DELETE FROM eligible_voters WHERE election_id = $1', [id]);
+
+    // Delete the election
     await pool.query('DELETE FROM elections WHERE id = $1', [id]);
 
     res.status(200).json({ success: true, message: 'Election deleted successfully' });
@@ -131,6 +132,7 @@ const deleteElection = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to delete election' });
   }
 };
+
 
 // Export all functions
 module.exports = {
