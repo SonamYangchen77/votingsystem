@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 // List all elections
-exports.listElections = async (req, res) => {
+const listElections = async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM elections ORDER BY id DESC');
     res.render('admin/adminElection', { elections: result.rows });
@@ -15,7 +15,7 @@ exports.listElections = async (req, res) => {
 };
 
 // Create new election with optional CSV for eligible voters
-exports.createElection = async (req, res) => {
+const createElection = async (req, res) => {
   const { name, description, startDate, endDate } = req.body;
   const file = req.file?.filename;
 
@@ -80,7 +80,7 @@ exports.createElection = async (req, res) => {
 };
 
 // Render edit form
-exports.renderEditElection = async (req, res) => {
+const renderEditElection = async (req, res) => {
   const id = req.params.id;
   try {
     const result = await pool.query('SELECT * FROM elections WHERE id = $1', [id]);
@@ -95,7 +95,7 @@ exports.renderEditElection = async (req, res) => {
 };
 
 // Update election
-exports.updateElection = async (req, res) => {
+const updateElection = async (req, res) => {
   const id = req.params.id;
   const { name, description, startDate, endDate } = req.body;
   try {
@@ -113,16 +113,30 @@ exports.updateElection = async (req, res) => {
 };
 
 // Delete election
-exports.deleteElection = async (req, res) => {
-  const electionId = req.params.id;
+const deleteElection = async (req, res) => {
+  const { id } = req.params;
 
   try {
-    await pool.query('DELETE FROM candidates WHERE election_id = $1', [electionId]);
-    await pool.query('DELETE FROM elections WHERE id = $1', [electionId]);
+    // Delete dependent data first
+    await pool.query('DELETE FROM candidates WHERE election_id = $1', [id]);
+    await pool.query('DELETE FROM positions WHERE election_id = $1', [id]);
+    await pool.query('DELETE FROM eligible_voters WHERE election_id = $1', [id]);
 
-    res.redirect('/admin/adminElection?message=Election deleted successfully');
-  } catch (error) {
-    console.error('Error deleting election:', error);
-    res.status(500).send('Failed to delete election: ' + error.message);
+    // Delete the election itself
+    await pool.query('DELETE FROM elections WHERE id = $1', [id]);
+
+    res.status(200).json({ success: true, message: 'Election deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting election:', err);
+    res.status(500).json({ success: false, message: 'Failed to delete election' });
   }
+};
+
+// Export all functions
+module.exports = {
+  listElections,
+  createElection,
+  renderEditElection,
+  updateElection,
+  deleteElection,
 };
